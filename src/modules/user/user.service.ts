@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as uuid from 'uuid';
 import { IUser } from './models';
+import { createUserObj, validateUserId } from './helpers';
 
 @Injectable()
 export class UserService {
@@ -68,8 +69,14 @@ export class UserService {
     }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    // validateUserId(id);
+    // console.log(updateUserDto.login);
+    console.log(updateUserDto);
+    const { oldPassword, newPassword } = updateUserDto;
+    // return createUserObj(updateUserDto, id, this.users);
+    return { oldPassword, newPassword };
+    // return `This action updates a #${id} user`;
   }
 
   // updatePut(id: number, updateUserDto: UpdateUserDto) {

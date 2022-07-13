@@ -3,10 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpCode,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -34,17 +34,22 @@ export class UserController {
     return this.userService.getById(id);
   }
 
-  @Patch(':id')
-  @HttpCode(200)
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  // @Put(':id')
-  // @HttpCode(StatusCodes.OK)
-  // updatePut(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.updatePut(+id, updateUserDto);
+  // @Patch(':id')
+  // @HttpCode(200)
+  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.userService.update(id, updateUserDto);
   // }
+
+  @Put(':id')
+  @HttpCode(StatusCodes.OK)
+  async updatePut(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    console.log(updateUserDto);
+    console.log(updateUserDto.oldPassword, updateUserDto.newPassword);
+    return this.userService.update(id, updateUserDto);
+  }
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
