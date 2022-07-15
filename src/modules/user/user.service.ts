@@ -1,43 +1,29 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import * as uuid from 'uuid';
-import { IUser } from './models';
-import { createUserObj, validateUserId } from './helpers';
+import { UserDto } from './dto/user.dto';
+import {
+  checkOldPassword,
+  createNewUserForPrint,
+  createUserForPrint,
+  isFieldsExist,
+  isFieldsExistPass,
+  validateUserId404,
+} from './helpers';
 
 @Injectable()
 export class UserService {
-  private users: IUser[] = [];
+  private users: UserDto[] = [];
+
+  // constructor(users) {
+  //   this.users = users;
+  // }
 
   create(createUserDto: CreateUserDto) {
-    // return `This action adds a new user ${createUserDto.login} with password ${createUserDto.password}`;
-    if (createUserDto.login && createUserDto.password) {
-      const user: IUser = {
-        login: createUserDto.login,
-        password: createUserDto.password,
-        id: uuid.v4(),
-        version: 1,
-        createdAt: new Date().getTime(),
-        updatedAt: new Date().getTime(),
-      };
-      // uuid.validate();
-      this.users.push(user);
-      return {
-        id: user.id,
-        login: user.login,
-        version: user.version,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      };
-    } else {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'body does not contain required fields',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    isFieldsExist(createUserDto);
+    const user = createNewUserForPrint(createUserDto);
+    this.users.push(user);
+    return createUserForPrint(user);
   }
 
   getAll() {
@@ -45,75 +31,35 @@ export class UserService {
   }
 
   getById(id: string) {
-    if (uuid.validate(id)) {
-      const result = this.users.find((user) => user.id === id);
-      if (result) {
-        return result;
-      } else {
-        throw new HttpException(
-          {
-            status: HttpStatus.NOT_FOUND,
-            error: "userId doesn't exist",
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
-    } else {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'userId is invalid (not uuid)',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    validateUserId404(id, this.users);
+    return this.users.find((user) => user.id === id);
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
-    // validateUserId(id);
-    // console.log(updateUserDto.login);
-    console.log(updateUserDto);
-    const { oldPassword, newPassword } = updateUserDto;
-    // return createUserObj(updateUserDto, id, this.users);
-    return { oldPassword, newPassword };
-    // return `This action updates a #${id} user`;
+    isFieldsExistPass(updateUserDto);
+    validateUserId404(id, this.users);
+    const user = this.users.find((us) => us.id === id);
+    checkOldPassword(
+      updateUserDto.oldPassword,
+      updateUserDto.newPassword,
+      user,
+    );
+    const index = this.users.indexOf(user);
+    user.version += 1;
+    user.password = updateUserDto.newPassword;
+    user.updatedAt = new Date().getTime();
+    this.users[index] = user;
+
+    return createUserForPrint(user);
   }
 
-  // updatePut(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action update by method PUT a #${id} user`;
-  // }
-
   remove(id: string) {
-    if (uuid.validate(id)) {
-      // return `This action removes a #${id} user`;
-      let indexForDelete = 0;
-
-      if (
-        this.users.find((user, index) => {
-          indexForDelete = index;
-          return user.id === id;
-        })
-      ) {
-        // this.users.indexOf()
-        this.users.splice(indexForDelete);
-        return `This action removes a #${id} user`;
-      } else {
-        throw new HttpException(
-          {
-            status: HttpStatus.NOT_FOUND,
-            error: "userId doesn't exist",
-          },
-          HttpStatus.NOT_FOUND,
-        );
-      }
-    } else {
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'userId is invalid (not uuid)',
-        },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    validateUserId404(id, this.users);
+    const index = this.users.findIndex((user) => user.id === id);
+    this.users = [
+      ...this.users.slice(0, index),
+      ...this.users.slice(index + 1),
+    ];
+    return `This action removes a #${id} user`;
   }
 }

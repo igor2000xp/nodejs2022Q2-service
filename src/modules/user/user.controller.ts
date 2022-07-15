@@ -1,11 +1,12 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpCode,
+  Param,
+  ParseUUIDPipe,
+  Post,
   Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -30,30 +31,22 @@ export class UserController {
   }
 
   @Get(':id')
-  getById(@Param('id') id: string) {
+  getById(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.getById(id);
   }
 
-  // @Patch(':id')
-  // @HttpCode(200)
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(id, updateUserDto);
-  // }
-
   @Put(':id')
   @HttpCode(StatusCodes.OK)
-  async updatePut(
-    @Param('id') id: string,
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    console.log(updateUserDto);
-    console.log(updateUserDto.oldPassword, updateUserDto.newPassword);
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.remove(id);
   }
 }

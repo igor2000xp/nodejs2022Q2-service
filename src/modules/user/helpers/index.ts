@@ -1,54 +1,87 @@
-import * as uuid from 'uuid';
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
+import { IUser, IUserForPrint } from '../models';
+import { CreateUserDto } from '../dto/create-user.dto';
+import * as uuid from 'uuid';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
-export const validateUserId = (id: string): boolean => {
-  if (uuid.validate(id)) {
+export const validateUserId404 = (id: string, users: IUser[]): boolean => {
+  if (users.find((usr) => usr.id === id)) {
     return true;
   } else {
     throw new HttpException(
       {
-        status: StatusCodes.BAD_REQUEST,
-        error: 'userId is invalid (not uuid)',
+        state: StatusCodes.NOT_FOUND,
+        error: "record with id === userId doesn't exist",
       },
-      StatusCodes.BAD_REQUEST,
+      StatusCodes.NOT_FOUND,
     );
   }
 };
 
-export interface IUserForPrint {
-  id: string; // uuid v4
-  login: string;
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
-}
+export const checkOldPassword = (
+  oldPass: string,
+  newPass: string,
+  user: IUser,
+): boolean => {
+  if (user.password === oldPass) {
+    return true;
+  } else {
+    throw new HttpException(
+      {
+        status: StatusCodes.FORBIDDEN,
+        error: 'old Password is wrong',
+      },
+      StatusCodes.FORBIDDEN,
+    );
+  }
+};
 
-export const createUserObj = (
-  updateUserDto: UpdateUserDto,
-  id: string,
-  users,
-) => {
-  console.log(updateUserDto);
-  // const user = users.find((us) => us.id === id);
-  // user.login = updateUserDto.login ? updateUserDto.login : user.login;
-  // user.version = updateUserDto.version ? updateUserDto.version : user.version;
-  // user.createdAt = updateUserDto.createdAt
-  //   ? updateUserDto.createdAt
-  //   : user.createdAt;
-  // user.updatedAt = new Date().getTime();
-  // users = { ...user };
-  //
-  // const userForPrint: IUserForPrint = {
-  //   id: user.id,
-  //   login: user.login,
-  //   version: user.version,
-  //   createdAt: user.createdAt,
-  //   updatedAt: user.updatedAt,
-  // };
-  //
-  // console.log(userForPrint);
+export const createUserForPrint = (user: IUser): IUserForPrint => {
+  return {
+    id: user.id,
+    login: user.login,
+    version: user.version,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+};
 
-  return updateUserDto;
+export const createNewUserForPrint = (createUserDto: CreateUserDto): IUser => {
+  return {
+    login: createUserDto.login,
+    password: createUserDto.password,
+    id: uuid.v4(),
+    version: 1,
+    createdAt: new Date().getTime(),
+    updatedAt: new Date().getTime(),
+  };
+};
+
+export const isFieldsExist = (createUserDto: CreateUserDto) => {
+  if (createUserDto.login && createUserDto.password) {
+    return true;
+  } else {
+    throw new HttpException(
+      {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'body does not contain required fields',
+      },
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+};
+
+export const isFieldsExistPass = (updateUserDto: UpdateUserDto) => {
+  if (updateUserDto.oldPassword && updateUserDto.newPassword) {
+    return true;
+  } else {
+    throw new HttpException(
+      {
+        status: HttpStatus.BAD_REQUEST,
+        error: 'body does not contain required fields',
+      },
+      HttpStatus.BAD_REQUEST,
+    );
+  }
 };
