@@ -16,6 +16,8 @@ export class UserEntity {
   }
 }
 
+// It's for the future to implement the methods in the storage
+
 // export class UserEntity {
 //   id: string;
 //   login: string;
