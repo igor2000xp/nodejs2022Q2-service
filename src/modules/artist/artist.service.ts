@@ -56,6 +56,20 @@ export class ArtistService {
     // });
     // this.store.artists = [...base];
     this.store.artists = this.store.artists.filter((usr) => usr.id !== id);
+    // const index = this.store.tracks.findIndex((item) => item.artistId !== id);
+    // console.log(index);
+    this.store.tracks.forEach((track, index) => {
+      if (track.artistId === id) this.store.tracks[index].artistId = null;
+    });
+
+    const favIndex = this.store.favorites.artists.findIndex(
+      (artist) => artist.id === id,
+    );
+    this.store.favorites.artists = [
+      ...this.store.favorites.artists.slice(0, favIndex),
+      ...this.store.favorites.artists.slice(favIndex + 1),
+    ];
+
     return `This action removes a #${id} artist`;
   }
 }
