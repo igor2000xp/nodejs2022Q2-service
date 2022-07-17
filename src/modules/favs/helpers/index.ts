@@ -74,3 +74,19 @@ export const checkUnprocessableArtist = (id: string, artists: IArtist[]) => {
       StatusCodes.UNPROCESSABLE_ENTITY,
     );
 };
+
+export const checkUnprocessableArtist2 = (id: string, artists: IArtist[]) => {
+  // if (typeof )
+  // const artistIndex = artists.findIndex((artist) => {
+  //   return artist.id === id;
+  // });
+  const artist = artists.find((item) => item.id === id);
+  if (!artist)
+    throw new HttpException(
+      {
+        status: StatusCodes.UNPROCESSABLE_ENTITY,
+        error: 'Artist is not found',
+      },
+      StatusCodes.UNPROCESSABLE_ENTITY,
+    );
+};
