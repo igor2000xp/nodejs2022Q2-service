@@ -7,12 +7,12 @@ import { UpdateAlbumDto } from '../dto/update-album.dto';
 
 export const validateId404 = (id: string, albums: IAlbum[]): boolean => {
   if (albums.find((item) => item.id === id)) {
-    console.log(albums.find((item) => item.id === id));
-    console.log(id);
+    // console.log(albums.find((item) => item.id === id));
+    // console.log(id);
     return true;
   } else {
-    console.log(albums.find((item) => item.id === id));
-    console.log(id);
+    // console.log(albums.find((item) => item.id === id));
+    // console.log(id);
     throw new HttpException(
       {
         state: StatusCodes.NOT_FOUND,
