@@ -47,11 +47,11 @@ export const createUserForPrint = (user: IUser): IUserForPrint => {
   };
 };
 
-export const createNewUserForPrint = (createUserDto: CreateUserDto): IUser => {
+export const createNewUser = (createUserDto: CreateUserDto): IUser => {
   return {
+    id: uuid.v4(),
     login: createUserDto.login,
     password: createUserDto.password,
-    id: uuid.v4(),
     version: 1,
     createdAt: new Date().getTime(),
     updatedAt: new Date().getTime(),
