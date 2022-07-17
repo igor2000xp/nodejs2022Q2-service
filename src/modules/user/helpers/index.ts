@@ -5,7 +5,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import * as uuid from 'uuid';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
-export const validateUserId404 = (id: string, users: IUser[]): boolean => {
+export const validateId404 = (id: string, users: IUser[]): boolean => {
   if (users.find((usr) => usr.id === id)) {
     return true;
   } else {

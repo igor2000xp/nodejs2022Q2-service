@@ -7,7 +7,7 @@ import {
   createUserForPrint,
   isFieldsExist,
   isFieldsExistPass,
-  validateUserId404,
+  validateId404,
 } from './helpers';
 import { InMemoryUserStore } from '../../store/in-memory-user-store';
 import { UserEntity } from './entities/user.entity';
@@ -30,13 +30,13 @@ export class UserService {
   }
 
   getById(id: string) {
-    validateUserId404(id, this.storage.users);
+    validateId404(id, this.storage.users);
     return this.storage.users.find((usr) => usr.id === id);
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
     isFieldsExistPass(updateUserDto);
-    validateUserId404(id, this.storage.users);
+    validateId404(id, this.storage.users);
     const user = this.storage.users.find((usr) => usr.id === id);
     checkOldPassword(
       updateUserDto.oldPassword,
@@ -52,7 +52,7 @@ export class UserService {
   }
 
   remove(id: string) {
-    validateUserId404(id, this.storage.users);
+    validateId404(id, this.storage.users);
     const index = this.storage.users.findIndex((user) => user.id === id);
     this.storage.users = [
       ...this.storage.users.slice(0, index),
