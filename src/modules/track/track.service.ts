@@ -12,34 +12,35 @@ export class TrackService {
     const newTrack = createNewTrack(createTrackDto);
     this.store.tracks.push(newTrack);
     return newTrack;
-    // return 'This action adds a new track';
   }
 
   findAll() {
     return this.store.tracks;
-    // return `This action returns all track`;
   }
 
   findOne(id: string) {
     validateId404(id, this.store.tracks);
     return this.store.tracks.find((item) => item.id === id);
-    // return `This action returns a #${id} track`;
   }
 
   update(id: string, updateTrackDto: UpdateTrackDto) {
-    // console.log(id, updateTrackDto);
     validateId404(id, this.store.tracks);
     checkFields(id, updateTrackDto);
     const trackObj = this.store.tracks.find((item) => item.id === id);
     const index = this.store.tracks.indexOf(trackObj);
     this.store.tracks[index] = { ...updateTrackDto, id };
     return this.store.tracks[index];
-    // return `This action updates a #${id} track`;
   }
 
   remove(id: string) {
     validateId404(id, this.store.tracks);
-    this.store.tracks = this.store.tracks.filter((item) => item.id !== id);
+
+    this.store.tracks = this.store.tracks.filter((usr) => usr.id !== id);
+
+    this.store.favorites.tracks = this.store.favorites.tracks.filter(
+      (itemId) => itemId !== id,
+    );
+
     return `This action removes a #${id} track`;
   }
 }

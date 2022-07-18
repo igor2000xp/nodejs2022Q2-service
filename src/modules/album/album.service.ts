@@ -12,18 +12,15 @@ export class AlbumService {
     const newAlbum = createNewAlbum(createAlbumDto);
     this.store.albums.push(newAlbum);
     return newAlbum;
-    // return 'This action adds a new album';
   }
 
   getAll() {
     return this.store.albums;
-    // return `This action returns all album`;
   }
 
   getById(id: string) {
     validateId404(id, this.store.albums);
     return this.store.albums.find((item) => item.id === id);
-    // return `This action returns a #${id} album`;
   }
 
   update(id: string, updateAlbumDto: UpdateAlbumDto) {
@@ -33,28 +30,21 @@ export class AlbumService {
     const index = this.store.albums.indexOf(albumObj);
     const newAlbum = { ...albumObj, ...updateAlbumDto };
     this.store.albums[index] = newAlbum;
+
     return newAlbum;
-    // return `This action updates a #${id} album`;
   }
 
   remove(id: string) {
     validateId404(id, this.store.albums);
     this.store.albums = this.store.albums.filter((item) => item.id !== id);
-    const index = this.store.tracks.findIndex((item) => item.albumId !== id);
-    console.log(index);
 
     this.store.tracks.forEach((track, index) => {
       if (track.albumId === id) this.store.tracks[index].albumId = null;
     });
 
-    const favIndex = this.store.favorites.albums.findIndex(
-      (album) => album.id === id,
+    this.store.favorites.albums = this.store.favorites.albums.filter(
+      (itemId) => itemId !== id,
     );
-    this.store.favorites.albums = [
-      ...this.store.favorites.albums.slice(0, favIndex),
-      ...this.store.favorites.albums.slice(favIndex + 1),
-    ];
-
     return `This action removes a #${id} album`;
   }
 }

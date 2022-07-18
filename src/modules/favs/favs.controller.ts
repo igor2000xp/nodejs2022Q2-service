@@ -23,6 +23,7 @@ export class FavsController {
     // @Body() createFavDto: CreateFavDto,
   ) {
     return this.favsService.createTrackFavorite(id);
+    // return { message: 'Successfully added' };
   }
 
   @Post('album/:id')
