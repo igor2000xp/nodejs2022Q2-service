@@ -7,12 +7,8 @@ import { UpdateTrackDto } from '../dto/update-track.dto';
 
 export const validateId404 = (id: string, tracks: IAlbum[]): boolean => {
   if (tracks.find((item) => item.id === id)) {
-    // console.log(tracks.find((item) => item.id === id));
-    // console.log(id);
     return true;
   } else {
-    // console.log(tracks.find((item) => item.id === id));
-    // console.log(id);
     throw new HttpException(
       {
         state: StatusCodes.NOT_FOUND,

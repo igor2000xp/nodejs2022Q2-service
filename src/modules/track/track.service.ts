@@ -26,9 +26,11 @@ export class TrackService {
   update(id: string, updateTrackDto: UpdateTrackDto) {
     validateId404(id, this.store.tracks);
     checkFields(id, updateTrackDto);
+
     const trackObj = this.store.tracks.find((item) => item.id === id);
     const index = this.store.tracks.indexOf(trackObj);
     this.store.tracks[index] = { ...updateTrackDto, id };
+
     return this.store.tracks[index];
   }
 

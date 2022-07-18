@@ -26,6 +26,7 @@ export class AlbumService {
   update(id: string, updateAlbumDto: UpdateAlbumDto) {
     validateId404(id, this.store.albums);
     checkFields(updateAlbumDto);
+
     const albumObj = this.store.albums.find((item) => item.id === id);
     const index = this.store.albums.indexOf(albumObj);
     const newAlbum = { ...albumObj, ...updateAlbumDto };

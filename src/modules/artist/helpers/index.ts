@@ -6,12 +6,8 @@ import { CreateArtistDto } from '../dto/create-artist.dto';
 
 export const validateId404 = (id: string, artist: IArtist[]): boolean => {
   if (artist.find((item) => item.id === id)) {
-    // console.log(artist.find((item) => item.id === id));
-    // console.log(id);
     return true;
   } else {
-    // console.log(artist.find((item) => item.id === id));
-    // console.log(id);
     throw new HttpException(
       {
         state: StatusCodes.NOT_FOUND,
