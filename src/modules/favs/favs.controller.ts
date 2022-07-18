@@ -8,8 +8,6 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { FavsService } from './favs.service';
-// import { CreateFavDto } from './dto/create-fav.dto';
-// import { UpdateFavDto } from './dto/update-fav.dto';
 import { StatusCodes } from 'http-status-codes';
 
 @Controller('favs')
@@ -18,29 +16,19 @@ export class FavsController {
 
   @Post('track/:id')
   @HttpCode(StatusCodes.CREATED)
-  createTrackFavorite(
-    @Param('id', ParseUUIDPipe) id: string,
-    // @Body() createFavDto: CreateFavDto,
-  ) {
+  createTrackFavorite(@Param('id', ParseUUIDPipe) id: string) {
     return this.favsService.createTrackFavorite(id);
-    // return { message: 'Successfully added' };
   }
 
   @Post('album/:id')
   @HttpCode(StatusCodes.CREATED)
-  createAlbumFavorite(
-    @Param('id', ParseUUIDPipe) id: string,
-    // @Body() createFavDto: CreateFavDto,
-  ) {
+  createAlbumFavorite(@Param('id', ParseUUIDPipe) id: string) {
     return this.favsService.createAlbumFavorite(id);
   }
 
   @Post('artist/:id')
   @HttpCode(StatusCodes.CREATED)
-  createArtistFavorite(
-    @Param('id', ParseUUIDPipe) id: string,
-    // @Body() createFavDto: CreateFavDto,
-  ) {
+  createArtistFavorite(@Param('id', ParseUUIDPipe) id: string) {
     return this.favsService.createArtistFavorite(id);
   }
 
@@ -59,7 +47,6 @@ export class FavsController {
   @Delete('artist/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
   removeArtistFromFavorite(@Param('id', ParseUUIDPipe) id: string) {
-    // console.log(id);
     return this.favsService.removeArtistFromFavorite(id);
   }
 
@@ -68,22 +55,4 @@ export class FavsController {
   removeAlbumFromFavorite(@Param('id', ParseUUIDPipe) id: string) {
     return this.favsService.removeAlbumFromFavorite(id);
   }
-
-  // @Get(':id')
-  // @HttpCode(StatusCodes.OK)
-  // getById(@Param('id', ParseUUIDPipe) id: string) {
-  //   return this.favsService.getById(id);
-  // }
-  //
-  // @Patch(':id')
-  // @HttpCode(StatusCodes.OK)
-  // update(@Param('id', ParseUUIDPipe) id: string, @Body() updateFavDto: UpdateFavDto) {
-  //   return this.favsService.update(id, updateFavDto);
-  // }
-  //
-  // @Delete(':id')
-  // @HttpCode(StatusCodes.NO_CONTENT)
-  // remove(@Param('id', ParseUUIDPipe) id: string) {
-  //   return this.favsService.remove(id);
-  // }
 }
