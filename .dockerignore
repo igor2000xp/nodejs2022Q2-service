@@ -1,0 +1,8 @@
+**/.dockerignore
+**/.env
+**/.git
+**/.vscode
+**/.idea
+**/docker-compose*
+**/compose*
+README.md
