@@ -1,1 +1,56 @@
-version: '3.9'
+# version: '3.9' #optional since v1.27.0
+#version: '1.29.2'
+version: '3'
+
+services:
+  app:
+    container_name: node_task # https://docs.docker.com/compose/compose-file/#container_name
+    image: node:lts-alpine # https://docs.docker.com/compose/compose-file/#image
+    build:
+      context: .
+      dockerfile: src/docker/app/Dockerfile
+      # Only will build development stage from our dockerfile
+#      target: development
+    volumes:
+      - .:/usr/src/app
+      - .:../../../node_modules
+#      - ./usr/src/app/node_modules
+
+    env_file:
+      - .env
+    # Run a command against the development stage of the image
+    command: npm run start:dev
+#    ports:
+#      - "${PORT}:${PORT}"
+    ports:
+      - "4000:4000"
+#    depends_on:
+#      - postgres
+
+#  postgres:
+#    image: postgres:alpine
+#    restart: always
+#    build:
+#      context: .
+#      dockerfile: ./docker/postgres/Dockerfile
+#    environment:
+#      POSTGRES_DB: ${POSTGRES_DB}
+#      POSTGRES_USER: ${POSTGRES_USER}
+#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#    networks:
+#      - task-net
+#    volumes:
+#      - postgres:./data
+#    ports:
+#      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+#
+#volumes:
+#  postgres:
+#    driver: local
+#
+#networks:
+#  task-net:
+#    name: task-net
+#    driver: bridge
+
+

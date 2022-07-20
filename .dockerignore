@@ -1,12 +1,11 @@
 .dockerignore
 **/Dockerfile
-**/.env
 **/.git
 **/.vscode
 **/.idea
 **/docker-compose*
 **/compose*
-node_modules
 npm-debug.log
 dist
+data
 README.md
