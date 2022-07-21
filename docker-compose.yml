@@ -1,56 +1,40 @@
-# version: '3.9' #optional since v1.27.0
-#version: '1.29.2'
-version: '3'
-
+version: '3.9'
 services:
   app:
-    container_name: node_task # https://docs.docker.com/compose/compose-file/#container_name
-    image: node:lts-alpine # https://docs.docker.com/compose/compose-file/#image
+    container_name: nest-js
     build:
       context: .
-      dockerfile: src/docker/app/Dockerfile
-      # Only will build development stage from our dockerfile
-#      target: development
+      dockerfile: ./src/docker/app/Dockerfile
     volumes:
-      - .:/usr/src/app
-      - .:../../../node_modules
-#      - ./usr/src/app/node_modules
-
-    env_file:
-      - .env
-    # Run a command against the development stage of the image
-    command: npm run start:dev
-#    ports:
-#      - "${PORT}:${PORT}"
+      - .:/usr/app
+      - /usr/app/node_modules
     ports:
-      - "4000:4000"
-#    depends_on:
-#      - postgres
-
-#  postgres:
-#    image: postgres:alpine
-#    restart: always
-#    build:
-#      context: .
-#      dockerfile: ./docker/postgres/Dockerfile
-#    environment:
-#      POSTGRES_DB: ${POSTGRES_DB}
-#      POSTGRES_USER: ${POSTGRES_USER}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-#    networks:
-#      - task-net
-#    volumes:
-#      - postgres:./data
-#    ports:
-#      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-#
-#volumes:
-#  postgres:
-#    driver: local
-#
-#networks:
-#  task-net:
-#    name: task-net
-#    driver: bridge
-
-
+      - ${PORT}:${PORT}
+    networks:
+      - my-network
+    depends_on:
+      - postgres
+    restart: always
+  postgres:
+    container_name: postgres
+    build:
+      context: .
+      dockerfile: ./src/docker/postgres/Dockerfile
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my-network
+    restart: always
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+networks:
+  my-network:
+    name: my-network
+    driver: bridge
+volumes:
+  postgres_data:

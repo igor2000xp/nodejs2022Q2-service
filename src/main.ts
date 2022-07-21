@@ -6,6 +6,8 @@ import { parse } from 'yaml';
 import { readFile } from 'fs/promises';
 
 async function bootstrap() {
+  const PORT = process.env.PORT || 4000;
+  console.log(process.env.PORT);
   const app = await NestFactory.create(AppModule);
 
   const DOC_API = await readFile(
@@ -16,6 +18,6 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document);
   SwaggerModule.setup('doc', app, document);
 
-  await app.listen(4000);
+  await app.listen(PORT);
 }
 bootstrap();
