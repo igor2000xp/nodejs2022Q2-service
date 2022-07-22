@@ -17,6 +17,10 @@ git clone {repository URL}
 npm install
 ```
 
+## Using .env
+
+Rename file `.env.example` to `.env` and enter the number of port.
+
 ## Running application
 
 ```
@@ -63,6 +67,12 @@ npm run lint
 
 ```
 npm run format
+```
+
+### For start to create and up containers
+
+```
+docker compose up
 ```
 
 ### Debugging in VSCode
