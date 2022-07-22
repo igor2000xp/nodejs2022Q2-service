@@ -7,7 +7,6 @@ import { readFile } from 'fs/promises';
 
 async function bootstrap() {
   const PORT = process.env.PORT || 4000;
-  console.log(process.env.PORT);
   const app = await NestFactory.create(AppModule);
 
   const DOC_API = await readFile(

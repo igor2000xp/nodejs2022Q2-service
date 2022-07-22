@@ -2,21 +2,26 @@ version: '3.9'
 services:
   app:
     container_name: nest-js
+    image: nest-js
     build:
       context: .
-      dockerfile: ./src/docker/app/Dockerfile
+      dockerfile: src/docker/app/Dockerfile
+    environment:
+      PORT: ${PORT}
+    command: npm run start:dev
     volumes:
-      - .:/usr/app
-      - /usr/app/node_modules
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - ${PORT}:${PORT}
     networks:
       - my-network
+    restart: unless-stopped
     depends_on:
       - postgres
-    restart: always
   postgres:
     container_name: postgres
+    image: postgres
     build:
       context: .
       dockerfile: ./src/docker/postgres/Dockerfile
@@ -26,7 +31,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - my-network
-    restart: always
+    restart: unless-stopped
     environment:
       PG_DATA: /var/lib/postgresql/data
       POSTGRES_USER: ${POSTGRES_USER}
