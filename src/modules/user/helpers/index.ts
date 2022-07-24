@@ -1,11 +1,14 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-import { IUser, IUserForPrint } from '../models';
 import { CreateUserDto } from '../dto/create-user.dto';
 import * as uuid from 'uuid';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserEntity } from '../entities/user.entity';
 
-export const validateId404 = (id: string, users: IUser[]): boolean => {
+export const validateId404 = async (
+  id: string,
+  users: any[],
+): Promise<boolean> => {
   if (users.find((usr) => usr.id === id)) {
     return true;
   } else {
@@ -22,7 +25,7 @@ export const validateId404 = (id: string, users: IUser[]): boolean => {
 export const checkOldPassword = (
   oldPass: string,
   newPass: string,
-  user: IUser,
+  user: any,
 ): boolean => {
   if (user.password === oldPass) {
     return true;
@@ -37,25 +40,15 @@ export const checkOldPassword = (
   }
 };
 
-export const createUserForPrint = (user: IUser): IUserForPrint => {
-  return {
-    id: user.id,
-    login: user.login,
-    version: user.version,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  };
-};
-
-export const createNewUser = (createUserDto: CreateUserDto): IUser => {
-  return {
+export const createNewUser = (createUserDto: CreateUserDto): UserEntity => {
+  const createdDate = new Date();
+  return new UserEntity({
     id: uuid.v4(),
-    login: createUserDto.login,
-    password: createUserDto.password,
+    ...createUserDto,
     version: 1,
-    createdAt: new Date().getTime(),
-    updatedAt: new Date().getTime(),
-  };
+    createdAt: createdDate,
+    updatedAt: createdDate,
+  });
 };
 
 export const isFieldsExist = (createUserDto: CreateUserDto) => {

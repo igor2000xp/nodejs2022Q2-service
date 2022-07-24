@@ -1,11 +1,12 @@
 import { HttpException } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-import { IAlbum } from '../models';
+// import { IAlbum } from '../models';
 import { CreateAlbumDto } from '../dto/create-album.dto';
 import * as uuid from 'uuid';
 import { UpdateAlbumDto } from '../dto/update-album.dto';
+import { AlbumEntity } from '../entities/album.entity';
 
-export const validateId404 = (id: string, albums: IAlbum[]): boolean => {
+export const validateId404 = (id: string, albums: any[]): boolean => {
   if (albums.find((item) => item.id === id)) {
     return true;
   } else {
@@ -20,7 +21,7 @@ export const validateId404 = (id: string, albums: IAlbum[]): boolean => {
 };
 
 export const createNewAlbum = (createAlbumDto: CreateAlbumDto) => {
-  return { ...createAlbumDto, id: uuid.v4() };
+  return new AlbumEntity({ ...createAlbumDto, id: uuid.v4() });
 };
 
 export const checkFields = (updateAlbumDto: UpdateAlbumDto) => {

@@ -20,34 +20,34 @@ export class AlbumController {
 
   @Post()
   @HttpCode(StatusCodes.CREATED)
-  create(@Body() createAlbumDto: CreateAlbumDto) {
-    return this.albumService.create(createAlbumDto);
+  async create(@Body() createAlbumDto: CreateAlbumDto) {
+    return await this.albumService.create(createAlbumDto);
   }
 
   @Get()
   @HttpCode(StatusCodes.OK)
-  getAll() {
-    return this.albumService.getAll();
+  async getAll() {
+    return await this.albumService.getAll();
   }
 
   @Get(':id')
   @HttpCode(StatusCodes.OK)
-  getById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.albumService.getById(id);
+  async getById(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.albumService.getById(id);
   }
 
   @Put(':id')
   @HttpCode(StatusCodes.OK)
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    return this.albumService.update(id, updateAlbumDto);
+    return await this.albumService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.albumService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.albumService.remove(id);
   }
 }

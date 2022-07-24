@@ -25,28 +25,28 @@ export class ArtistController {
   }
 
   @Get()
-  getAll() {
-    return this.artistService.getAll();
+  async getAll() {
+    return await this.artistService.getAll();
   }
 
   @Get(':id')
   @HttpCode(StatusCodes.OK)
-  getById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.artistService.getById(id);
+  async getById(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.artistService.getById(id);
   }
 
   @Put(':id')
   @HttpCode(StatusCodes.OK)
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    return this.artistService.update(id, updateArtistDto);
+    return await this.artistService.update(id, updateArtistDto);
   }
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.artistService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.artistService.remove(id);
   }
 }

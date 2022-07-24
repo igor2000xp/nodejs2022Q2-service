@@ -1,57 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { InMemoryUserStore } from '../../store/in-memory-user-store';
+// import { InMemoryUserStore } from '../../store/in-memory-user-store';
 import {
   createArtist,
   isFieldsExist,
   isValidField,
   validateId404,
 } from './helpers';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class ArtistService {
-  constructor(private store: InMemoryUserStore) {}
+  constructor(private prisma: PrismaService) {}
+  // private store: InMemoryUserStore,
 
-  create(createArtistDto: CreateArtistDto) {
-    isFieldsExist(createArtistDto);
-    const newArtist = createArtist(createArtistDto);
-    this.store.artists.push(newArtist);
-    return newArtist;
+  async create(createArtistDto: CreateArtistDto) {
+    try {
+      isFieldsExist(createArtistDto);
+      const newArtist = createArtist(createArtistDto);
+      await this.prisma.artist.create({ data: newArtist });
+
+      return newArtist;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  getAll() {
-    return this.store.artists;
+  async getAll() {
+    return await this.prisma.artist.findMany();
   }
 
-  getById(id: string) {
-    validateId404(id, this.store.artists);
-    return this.store.artists.find((usr) => usr.id === id);
+  async getById(id: string) {
+    validateId404(id, await this.prisma.artist.findMany());
+
+    return this.prisma.artist.findFirst({ where: { id } });
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto) {
-    validateId404(id, this.store.artists);
+  async update(id: string, updateArtistDto: UpdateArtistDto) {
+    validateId404(id, await this.prisma.artist.findMany());
     isValidField(updateArtistDto);
-    const index = this.store.artists.findIndex((item) => item.id === id);
-    let newUser = this.store.artists.find((item) => item.id === id);
-    newUser = { ...newUser, ...updateArtistDto, id };
-    this.store.artists[index] = newUser;
 
-    return newUser;
+    return await this.prisma.artist.update({
+      where: { id },
+      data: { ...updateArtistDto },
+    });
   }
 
-  remove(id: string) {
-    validateId404(id, this.store.artists);
+  async remove(id: string) {
+    validateId404(id, await this.prisma.artist.findMany());
+    await this.prisma.artist.delete({ where: { id } });
 
-    this.store.artists = this.store.artists.filter((usr) => usr.id !== id);
-
-    this.store.tracks.forEach((track, index) => {
-      if (track.artistId === id) this.store.tracks[index].artistId = null;
-    });
-
-    this.store.favorites.artists = this.store.favorites.artists.filter(
-      (itemId) => itemId !== id,
-    );
+    // this.store.tracks.forEach((track, index) => {
+    //   if (track.artistId === id) this.store.tracks[index].artistId = null;
+    // });
+    //
+    // this.store.favorites.artists = this.store.favorites.artists.filter(
+    //   (itemId) => itemId !== id,
+    // );
 
     return `This action removes a #${id} artist`;
   }

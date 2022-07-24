@@ -1,51 +1,60 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { InMemoryUserStore } from '../../store/in-memory-user-store';
 import { checkFields, createNewAlbum, validateId404 } from './helpers';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class AlbumService {
-  constructor(private store: InMemoryUserStore) {}
+  constructor(
+    private store: InMemoryUserStore,
+    private prisma: PrismaService,
+  ) {}
 
-  create(createAlbumDto: CreateAlbumDto) {
-    const newAlbum = createNewAlbum(createAlbumDto);
-    this.store.albums.push(newAlbum);
-    return newAlbum;
+  async create(createAlbumDto: CreateAlbumDto) {
+    try {
+      const newAlbum = createNewAlbum(createAlbumDto);
+      await this.prisma.album.create({ data: newAlbum });
+
+      return newAlbum;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  getAll() {
-    return this.store.albums;
+  async getAll() {
+    return await this.prisma.album.findMany();
   }
 
-  getById(id: string) {
-    validateId404(id, this.store.albums);
-    return this.store.albums.find((item) => item.id === id);
+  async getById(id: string) {
+    validateId404(id, await this.prisma.album.findMany());
+    return await this.prisma.album.findFirst({ where: { id } });
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    validateId404(id, this.store.albums);
+  async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    validateId404(id, await this.prisma.album.findMany());
     checkFields(updateAlbumDto);
+    const album = await this.prisma.album.findFirst({ where: { id } });
 
-    const albumObj = this.store.albums.find((item) => item.id === id);
-    const index = this.store.albums.indexOf(albumObj);
-    const newAlbum = { ...albumObj, ...updateAlbumDto };
-    this.store.albums[index] = newAlbum;
-
-    return newAlbum;
+    return await this.prisma.album.update({
+      where: { id },
+      data: { ...album, ...updateAlbumDto },
+    });
   }
 
-  remove(id: string) {
-    validateId404(id, this.store.albums);
-    this.store.albums = this.store.albums.filter((item) => item.id !== id);
+  async remove(id: string) {
+    validateId404(id, await this.prisma.album.findMany());
+    // this.store.albums = this.store.albums.filter((item) => item.id !== id);
+    await this.prisma.album.delete({ where: { id } });
 
-    this.store.tracks.forEach((track, index) => {
-      if (track.albumId === id) this.store.tracks[index].albumId = null;
-    });
-
-    this.store.favorites.albums = this.store.favorites.albums.filter(
-      (itemId) => itemId !== id,
-    );
+    // this.store.tracks.forEach((track, index) => {
+    //   if (track.albumId === id) this.store.tracks[index].albumId = null;
+    // });
+    //
+    // this.store.favorites.albums = this.store.favorites.albums.filter(
+    //   (itemId) => itemId !== id,
+    // );
     return `This action removes a #${id} album`;
   }
 }

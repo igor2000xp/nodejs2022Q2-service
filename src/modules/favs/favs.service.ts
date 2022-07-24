@@ -6,7 +6,8 @@ import { checkAlbumId, checkArtistId, checkTrackId } from './helpers';
 export class FavsService {
   constructor(private store: InMemoryUserStore) {}
 
-  createTrackFavorite(id: string) {
+  async createTrackFavorite(id: string) {
+    // const trackCheck = this.store.tracks.find((item) => item.id === id);
     const trackCheck = this.store.tracks.find((item) => item.id === id);
     if (!trackCheck) throw new UnprocessableEntityException();
 
@@ -14,7 +15,7 @@ export class FavsService {
     this.store.favorites.tracks.push(track.id);
   }
 
-  createAlbumFavorite(id: string) {
+  async createAlbumFavorite(id: string) {
     const albumCheck = this.store.albums.find((item) => item.id === id);
     if (!albumCheck) throw new UnprocessableEntityException();
 
@@ -22,7 +23,7 @@ export class FavsService {
     this.store.favorites.albums.push(album.id);
   }
 
-  createArtistFavorite(id: string) {
+  async createArtistFavorite(id: string) {
     const artistCheck = this.store.artists.find((item) => item.id === id);
     if (!artistCheck) throw new UnprocessableEntityException();
 
@@ -30,28 +31,28 @@ export class FavsService {
     this.store.favorites.artists.push(artist.id);
   }
 
-  removeTrackFromFavorite(id: string) {
+  async removeTrackFromFavorite(id: string) {
     checkTrackId(id, this.store.favorites.tracks);
     this.store.favorites.tracks = this.store.favorites.tracks.filter(
       (itemId) => itemId !== id,
     );
   }
 
-  removeAlbumFromFavorite(id: string) {
+  async removeAlbumFromFavorite(id: string) {
     checkAlbumId(id, this.store.favorites.albums);
     this.store.favorites.albums = this.store.favorites.albums.filter(
       (itemId) => itemId !== id,
     );
   }
 
-  removeArtistFromFavorite(id: string) {
+  async removeArtistFromFavorite(id: string) {
     checkArtistId(id, this.store.favorites.artists);
     this.store.favorites.artists = this.store.favorites.artists.filter(
       (item) => item !== id,
     );
   }
 
-  getAll() {
+  async getAll() {
     const resultAllTracks = this.store.favorites.tracks.map((itemId) => {
       return this.store.tracks.find((tr) => tr.id === itemId);
     });

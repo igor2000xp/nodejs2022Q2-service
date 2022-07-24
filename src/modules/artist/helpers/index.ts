@@ -1,10 +1,11 @@
 import { HttpException } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-import { IArtist } from '../models';
+// import { IArtist } from '../models';
 import * as uuid from 'uuid';
 import { CreateArtistDto } from '../dto/create-artist.dto';
+import { ArtistEntity } from '../entities/artist.entity';
 
-export const validateId404 = (id: string, artist: IArtist[]): boolean => {
+export const validateId404 = (id: string, artist: any[]): boolean => {
   if (artist.find((item) => item.id === id)) {
     return true;
   } else {
@@ -19,7 +20,10 @@ export const validateId404 = (id: string, artist: IArtist[]): boolean => {
 };
 
 export const createArtist = (createArtistDto: CreateArtistDto) => {
-  return { ...createArtistDto, id: uuid.v4() };
+  return new ArtistEntity({
+    ...createArtistDto,
+    id: uuid.v4(),
+  });
 };
 
 export const isFieldsExist = (createArtistDto: CreateArtistDto) => {

@@ -20,34 +20,34 @@ export class TrackController {
 
   @Post()
   @HttpCode(StatusCodes.CREATED)
-  create(@Body() createTrackDto: CreateTrackDto) {
-    return this.trackService.create(createTrackDto);
+  async create(@Body() createTrackDto: CreateTrackDto) {
+    return await this.trackService.create(createTrackDto);
   }
 
   @Get()
   @HttpCode(StatusCodes.OK)
-  findAll() {
-    return this.trackService.findAll();
+  async findAll() {
+    return await this.trackService.findAll();
   }
 
   @Get(':id')
   @HttpCode(StatusCodes.OK)
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.trackService.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.trackService.findOne(id);
   }
 
   @Put(':id')
   @HttpCode(StatusCodes.OK)
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    return this.trackService.update(id, updateTrackDto);
+    return await this.trackService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.trackService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.trackService.remove(id);
   }
 }

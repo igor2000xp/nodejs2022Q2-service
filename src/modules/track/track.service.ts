@@ -1,47 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { InMemoryUserStore } from '../../store/in-memory-user-store';
+// import { InMemoryUserStore } from '../../store/in-memory-user-store';
 import { checkFields, createNewTrack, validateId404 } from './helpers';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class TrackService {
-  constructor(private store: InMemoryUserStore) {}
+  constructor(private prisma: PrismaService) {}
+  // private store: InMemoryUserStore,
 
-  create(createTrackDto: CreateTrackDto) {
-    const newTrack = createNewTrack(createTrackDto);
-    this.store.tracks.push(newTrack);
-    return newTrack;
+  async create(createTrackDto: CreateTrackDto) {
+    try {
+      const newTrack = createNewTrack(createTrackDto);
+      return await this.prisma.track.create({ data: newTrack });
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  findAll() {
-    return this.store.tracks;
+  async findAll() {
+    return await this.prisma.track.findMany();
+    // return await this.prisma.track.findMany();
   }
 
-  findOne(id: string) {
-    validateId404(id, this.store.tracks);
-    return this.store.tracks.find((item) => item.id === id);
+  async findOne(id: string) {
+    validateId404(id, await this.prisma.track.findMany());
+    return await this.prisma.track.findFirst({ where: { id } });
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
-    validateId404(id, this.store.tracks);
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    validateId404(id, await this.prisma.track.findMany());
     checkFields(id, updateTrackDto);
 
-    const trackObj = this.store.tracks.find((item) => item.id === id);
-    const index = this.store.tracks.indexOf(trackObj);
-    this.store.tracks[index] = { ...updateTrackDto, id };
-
-    return this.store.tracks[index];
+    const track = await this.prisma.track.findFirst({ where: { id } });
+    return await this.prisma.track.update({
+      where: { id },
+      data: { ...track, ...updateTrackDto },
+    });
   }
 
-  remove(id: string) {
-    validateId404(id, this.store.tracks);
+  async remove(id: string) {
+    validateId404(id, await this.prisma.track.findMany());
+    await this.prisma.track.delete({ where: { id } });
 
-    this.store.tracks = this.store.tracks.filter((usr) => usr.id !== id);
-
-    this.store.favorites.tracks = this.store.favorites.tracks.filter(
-      (itemId) => itemId !== id,
-    );
+    // this.store.favorites.tracks = this.store.favorites.tracks.filter(
+    //   (itemId) => itemId !== id,
+    // );
 
     return `This action removes a #${id} track`;
   }

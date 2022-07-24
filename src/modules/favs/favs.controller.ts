@@ -16,43 +16,43 @@ export class FavsController {
 
   @Post('track/:id')
   @HttpCode(StatusCodes.CREATED)
-  createTrackFavorite(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favsService.createTrackFavorite(id);
+  async createTrackFavorite(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favsService.createTrackFavorite(id);
   }
 
   @Post('album/:id')
   @HttpCode(StatusCodes.CREATED)
-  createAlbumFavorite(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favsService.createAlbumFavorite(id);
+  async createAlbumFavorite(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favsService.createAlbumFavorite(id);
   }
 
   @Post('artist/:id')
   @HttpCode(StatusCodes.CREATED)
-  createArtistFavorite(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favsService.createArtistFavorite(id);
+  async createArtistFavorite(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favsService.createArtistFavorite(id);
   }
 
   @Get()
   @HttpCode(StatusCodes.OK)
-  getAll() {
-    return this.favsService.getAll();
+  async getAll() {
+    return await this.favsService.getAll();
   }
 
   @Delete('track/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  removeTrackFromFavorite(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favsService.removeTrackFromFavorite(id);
+  async removeTrackFromFavorite(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favsService.removeTrackFromFavorite(id);
   }
 
   @Delete('artist/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  removeArtistFromFavorite(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favsService.removeArtistFromFavorite(id);
+  async removeArtistFromFavorite(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favsService.removeArtistFromFavorite(id);
   }
 
   @Delete('album/:id')
   @HttpCode(StatusCodes.NO_CONTENT)
-  removeAlbumFromFavorite(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favsService.removeAlbumFromFavorite(id);
+  async removeAlbumFromFavorite(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.favsService.removeAlbumFromFavorite(id);
   }
 }

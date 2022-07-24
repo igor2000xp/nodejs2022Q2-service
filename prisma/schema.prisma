@@ -8,17 +8,50 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  Post  Post[]
+  id        String    @id @default(uuid())
+  login     String
+  password  String
+  version   Int       @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+model Artist {
+  id  String @id @default(uuid())
+  name String
+  grammy Boolean
+  albums     Album[]
+  tracks     Track[]
+  favs       Favorite? @relation(fields: [favoriteId], references: [id], onDelete: SetNull)
+  favoriteId String?
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean? @default(false)
-  authorId  Int?
-  User      User?    @relation(fields: [authorId], references: [id])
+model Album {
+  id         String    @id @default(uuid())
+  name       String
+  year       Int
+  artist     Artist?   @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId   String?
+  tracks     Track[]
+  favs       Favorite? @relation(fields: [favoriteId], references: [id], onDelete: SetNull)
+  favoriteId String?
+}
+
+model Track {
+  artist     Artist?   @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId   String?
+  albums     Album?    @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  albumId    String?
+  favs       Favorite? @relation(fields: [favoriteId], references: [id], onDelete: SetNull)
+  favoriteId String?
+  id         String    @id @default(uuid())
+  name       String
+  duration   Int
+
+}
+
+model Favorite {
+  artists Artist[]
+  albums  Album[]
+  tracks  Track[]
+  id      String   @id @default(uuid())
 }

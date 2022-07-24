@@ -6,11 +6,3 @@ export interface IUser {
   createdAt: number; // timestamp of creation
   updatedAt: number; // timestamp of last update
 }
-
-export interface IUserForPrint {
-  id: string; // uuid v4
-  login: string;
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
-}

@@ -1,8 +1,14 @@
+import { IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+
 export class CreateUserDto {
-  id: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ example: 'admin' })
   login: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ example: 'pAsSword' })
   password: string;
-  version: number; // integer number, increments on update
-  createdAt: number; // timestamp of creation
-  updatedAt: number; // timestamp of last update
 }

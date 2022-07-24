@@ -1,11 +1,12 @@
-import { IAlbum } from '../../album/models';
+// import { IAlbum } from '../../album/models';
 import { HttpException } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import { CreateTrackDto } from '../dto/create-track.dto';
 import * as uuid from 'uuid';
 import { UpdateTrackDto } from '../dto/update-track.dto';
+import { TrackEntity } from '../entities/track.entity';
 
-export const validateId404 = (id: string, tracks: IAlbum[]): boolean => {
+export const validateId404 = (id: string, tracks: any[]): boolean => {
   if (tracks.find((item) => item.id === id)) {
     return true;
   } else {
@@ -20,7 +21,7 @@ export const validateId404 = (id: string, tracks: IAlbum[]): boolean => {
 };
 
 export const createNewTrack = (createTrackDto: CreateTrackDto) => {
-  return { ...createTrackDto, id: uuid.v4() };
+  return new TrackEntity({ ...createTrackDto, id: uuid.v4() });
 };
 
 export const checkFields = (id: string, updateTrackDto: UpdateTrackDto) => {
