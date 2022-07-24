@@ -46,15 +46,19 @@ export class AlbumService {
   async remove(id: string) {
     validateId404(id, await this.prisma.album.findMany());
     // this.store.albums = this.store.albums.filter((item) => item.id !== id);
-    await this.prisma.album.delete({ where: { id } });
+    return await this.prisma.album.delete({ where: { id } });
 
     // this.store.tracks.forEach((track, index) => {
     //   if (track.albumId === id) this.store.tracks[index].albumId = null;
     // });
+
+    //
+    // const trackListToClean = await this.prisma.track.findMany({ where:  })
+
     //
     // this.store.favorites.albums = this.store.favorites.albums.filter(
     //   (itemId) => itemId !== id,
     // );
-    return `This action removes a #${id} album`;
+    // return `This action removes a #${id} album`;
   }
 }

@@ -49,7 +49,7 @@ export class ArtistService {
 
   async remove(id: string) {
     validateId404(id, await this.prisma.artist.findMany());
-    await this.prisma.artist.delete({ where: { id } });
+    return await this.prisma.artist.delete({ where: { id } });
 
     // this.store.tracks.forEach((track, index) => {
     //   if (track.artistId === id) this.store.tracks[index].artistId = null;
@@ -59,6 +59,6 @@ export class ArtistService {
     //   (itemId) => itemId !== id,
     // );
 
-    return `This action removes a #${id} artist`;
+    // return `This action removes a #${id} artist`;
   }
 }

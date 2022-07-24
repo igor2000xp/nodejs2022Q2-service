@@ -1,11 +1,11 @@
 import {
-  // HttpException,
-  // HttpStatus,
+  HttpException,
+  HttpStatus,
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InMemoryUserStore } from '../../store/in-memory-user-store';
-import { checkAlbumId, checkArtistId, checkTrackId } from './helpers';
+// import { checkTrackId } from './helpers';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
@@ -23,7 +23,9 @@ export class FavsService {
     // const track = this.store.tracks.find((item) => item.id === id);
     // this.store.favorites.tracks.push(track.id);
     const track = await this.prisma.track.findFirst({ where: { id } });
-    if (!track) throw new UnprocessableEntityException();
+    // console.log(track);
+    if (typeof track === 'undefined' || !track)
+      throw new UnprocessableEntityException();
     await this.prisma.track.update({
       where: { id },
       data: {
@@ -44,8 +46,11 @@ export class FavsService {
     //
     // const album = this.store.albums.find((item) => item.id === id);
     // this.store.favorites.albums.push(album.id);
-    const album = await this.prisma.album.findMany({ where: { id } });
-    if (!album) throw new UnprocessableEntityException();
+    const album = await this.prisma.album.findFirst({ where: { id } });
+    if (typeof album === 'undefined' || !album)
+      throw new UnprocessableEntityException();
+    // console.log(id);
+    // console.log(album);
     await this.prisma.album.update({
       where: { id },
       data: {
@@ -61,8 +66,10 @@ export class FavsService {
     //
     // const artist = this.store.artists.find((item) => item.id === id);
     // this.store.favorites.artists.push(artist.id);
-    const artist = await this.prisma.artist.findMany({ where: { id } });
-    if (!artist) throw new UnprocessableEntityException();
+    const artist = await this.prisma.artist.findFirst({ where: { id } });
+    // console.log(artist);
+    if (typeof artist === 'undefined' || !artist)
+      throw new UnprocessableEntityException();
     await this.prisma.artist.update({
       where: { id },
       data: {
@@ -77,7 +84,13 @@ export class FavsService {
     // this.store.favorites.tracks = this.store.favorites.tracks.filter(
     //   (itemId) => itemId !== id,
     // );
-    checkTrackId(id, await this.prisma.track.findMany());
+    // checkTrackId(id, await this.prisma.track.findMany());
+    const track = await this.prisma.track.findFirst({ where: { id } });
+    if (!track) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      throw new HttpException(err.message, HttpStatus.NOT_FOUND);
+    }
     await this.prisma.track.update({
       where: { id },
       data: { favsTrack: false },
@@ -89,7 +102,13 @@ export class FavsService {
     // this.store.favorites.albums = this.store.favorites.albums.filter(
     //   (itemId) => itemId !== id,
     // );
-    checkAlbumId(id, await this.prisma.album.findMany());
+    // checkAlbumId(id, await this.prisma.album.findMany());
+    const album = await this.prisma.album.findFirst({ where: { id } });
+    if (!album) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      throw new HttpException(err.message, HttpStatus.NOT_FOUND);
+    }
     await this.prisma.album.update({
       where: { id },
       data: { favsAlbum: false },
@@ -101,7 +120,14 @@ export class FavsService {
     // this.store.favorites.artists = this.store.favorites.artists.filter(
     //   (item) => item !== id,
     // );
-    checkArtistId(id, await this.prisma.artist.findMany());
+    // checkArtistId(id, await this.prisma.artist.findMany());
+    const artist = await this.prisma.artist.findFirst({ where: { id } });
+    if (!artist) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      throw new HttpException(err.message, HttpStatus.NOT_FOUND);
+    }
+    // const artist = await this
     await this.prisma.artist.update({
       where: { id },
       data: { favsArtist: false },
@@ -126,7 +152,7 @@ export class FavsService {
     const resultAllTracks = await this.prisma.track.findMany({
       where: { favsTrack: true },
     });
-    console.log(resultAllTracks);
+    // console.log(resultAllTracks);
 
     // const result = await prisma.user.findMany({
     //   where: {
