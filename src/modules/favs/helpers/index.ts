@@ -1,7 +1,7 @@
 import { HttpException } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 
-export const checkTrackId = (id: string, tracks: string[]) => {
+export const checkTrackId = (id: string, tracks: any[]) => {
   if (tracks.filter((item) => item === id)) {
     return true;
   } else {
@@ -15,7 +15,7 @@ export const checkTrackId = (id: string, tracks: string[]) => {
   }
 };
 
-export const checkAlbumId = (id: string, albums: string[]) => {
+export const checkAlbumId = (id: string, albums: any[]) => {
   if (albums.find((item) => item === id)) {
     return albums.find((item) => item === id);
   } else {
@@ -29,7 +29,7 @@ export const checkAlbumId = (id: string, albums: string[]) => {
   }
 };
 
-export const checkArtistId = (id: string, artists: string[]) => {
+export const checkArtistId = (id: string, artists: any[]) => {
   const isArtist = artists.findIndex((item) => item === id);
   if (isArtist !== -1) {
     return artists.find((item) => item === id);
