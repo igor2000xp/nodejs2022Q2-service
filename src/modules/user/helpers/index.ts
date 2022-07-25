@@ -41,13 +41,9 @@ export const checkOldPassword = (
 };
 
 export const createNewUser = (createUserDto: CreateUserDto): UserEntity => {
-  const createdDate = new Date();
   return new UserEntity({
     id: uuid.v4(),
     ...createUserDto,
-    version: 1,
-    createdAt: createdDate,
-    updatedAt: createdDate,
   });
 };
 
