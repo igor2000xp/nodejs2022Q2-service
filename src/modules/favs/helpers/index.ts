@@ -1,47 +1,36 @@
-// import { HttpException } from '@nestjs/common';
-// import { StatusCodes } from 'http-status-codes';
+import { TrackEntity } from '../../track/entities/track.entity';
+import { ArtistEntity } from '../../artist/entities/artist.entity';
+import { AlbumEntity } from '../../album/entities/album.entity';
 
-// export const checkTrackId = (id: string, tracks: any[]) => {
-//   if (tracks.filter((item) => item === id)) {
-//     return true;
-//   } else {
-//     throw new HttpException(
-//       {
-//         status: StatusCodes.NOT_FOUND,
-//         error: 'corresponding track is not favorite',
-//       },
-//       StatusCodes.NOT_FOUND,
-//     );
-//   }
-// };
+export const removeFavsFieldFromTrack = (tracks: TrackEntity[]) => {
+  return tracks.map((item) => {
+    return {
+      albumId: item.albumId,
+      artistId: item.artistId,
+      duration: item.duration,
+      id: item.id,
+      name: item.name,
+    };
+  });
+};
 
-// export const checkAlbumId = (id: string, albums: any[]) => {
-//   if (albums.find((item) => item === id)) {
-//     return albums.find((item) => item === id);
-//   } else {
-//     throw new HttpException(
-//       {
-//         status: StatusCodes.NOT_FOUND,
-//         error: 'corresponding album is not favorite',
-//       },
-//       StatusCodes.NOT_FOUND,
-//     );
-//   }
-// };
+export const removeFavsFieldFromArtist = (artists: ArtistEntity[]) => {
+  return artists.map((item) => {
+    return {
+      grammy: item.grammy,
+      id: item.id,
+      name: item.name,
+    };
+  });
+};
 
-// export const checkArtistId = (id: string, artists: any[]) => {
-//   const isArtist = artists.findIndex((item) => item === id);
-//   if (isArtist !== -1) {
-//     return artists.find((item) => item === id);
-//   } else {
-//     console.log('404');
-//     console.log(id);
-//     throw new HttpException(
-//       {
-//         status: StatusCodes.NOT_FOUND,
-//         error: 'corresponding artist is not favorite',
-//       },
-//       StatusCodes.NOT_FOUND,
-//     );
-//   }
-// };
+export const removeFavsFieldFromAlbum = (albums: AlbumEntity[]) => {
+  return albums.map((item) => {
+    return {
+      artistId: item.artistId,
+      id: item.id,
+      name: item.name,
+      year: item.year,
+    };
+  });
+};
