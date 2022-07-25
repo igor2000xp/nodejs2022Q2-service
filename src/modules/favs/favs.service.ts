@@ -1,7 +1,6 @@
 import {
-  HttpException,
-  HttpStatus,
   Injectable,
+  NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InMemoryUserStore } from '../../store/in-memory-user-store';
@@ -89,11 +88,11 @@ export class FavsService {
     if (!track) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      throw new HttpException(err.message, HttpStatus.NOT_FOUND);
+      throw new NotFoundException({}, 'Error');
     }
     await this.prisma.track.update({
       where: { id },
-      data: { favsTrack: false },
+      data: { ...track, favsTrack: false },
     });
   }
 
@@ -105,13 +104,11 @@ export class FavsService {
     // checkAlbumId(id, await this.prisma.album.findMany());
     const album = await this.prisma.album.findFirst({ where: { id } });
     if (!album) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      throw new HttpException(err.message, HttpStatus.NOT_FOUND);
+      throw new NotFoundException({}, 'Error');
     }
     await this.prisma.album.update({
       where: { id },
-      data: { favsAlbum: false },
+      data: { ...album, favsAlbum: false },
     });
   }
 
@@ -125,12 +122,12 @@ export class FavsService {
     if (!artist) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      throw new HttpException(err.message, HttpStatus.NOT_FOUND);
+      throw new NotFoundException({}, 'Error');
     }
     // const artist = await this
     await this.prisma.artist.update({
       where: { id },
-      data: { favsArtist: false },
+      data: { ...artist, favsArtist: false },
     });
   }
 
@@ -152,7 +149,16 @@ export class FavsService {
     const resultAllTracks = await this.prisma.track.findMany({
       where: { favsTrack: true },
     });
-    // console.log(resultAllTracks);
+    const resultAllTracksCorr = resultAllTracks.map((item) => {
+      return {
+        albumId: item.albumId,
+        artistId: item.artistId,
+        duration: item.duration,
+        id: item.id,
+        name: item.name,
+      };
+    });
+    // console.log(resultAllTracksCorr);
 
     // const result = await prisma.user.findMany({
     //   where: {
@@ -168,6 +174,14 @@ export class FavsService {
     const resultAllAlbums = await this.prisma.album.findMany({
       where: { favsAlbum: true },
     });
+    const resultAllAlbumsCorr = resultAllAlbums.map((item) => {
+      return {
+        artistId: item.artistId,
+        id: item.id,
+        name: item.name,
+        year: item.year,
+      };
+    });
 
     // const resultAllArtists = this.store.favorites.artists.map((itemId) => {
     //   return this.store.artists.find((tr) => tr.id === itemId);
@@ -176,11 +190,18 @@ export class FavsService {
     const resultAllArtists = await this.prisma.artist.findMany({
       where: { favsArtist: true },
     });
+    const resultAllArtistsCorr = resultAllArtists.map((item) => {
+      return {
+        grammy: item.grammy,
+        id: item.id,
+        name: item.name,
+      };
+    });
 
     return {
-      artists: resultAllArtists || [],
-      albums: resultAllAlbums || [],
-      tracks: resultAllTracks || [],
+      artists: resultAllArtistsCorr || [],
+      albums: resultAllAlbumsCorr || [],
+      tracks: resultAllTracksCorr || [],
     };
   }
 }
