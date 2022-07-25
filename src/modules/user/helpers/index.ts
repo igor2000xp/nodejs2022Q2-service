@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
 import { CreateUserDto } from '../dto/create-user.dto';
-import * as uuid from 'uuid';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
 
@@ -41,8 +40,10 @@ export const checkOldPassword = (
 };
 
 export const createNewUser = (createUserDto: CreateUserDto): UserEntity => {
+  const createTime = new Date();
   return new UserEntity({
-    id: uuid.v4(),
+    createdAt: createTime,
+    updatedAt: createTime,
     ...createUserDto,
   });
 };

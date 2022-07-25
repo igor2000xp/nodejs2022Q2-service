@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
@@ -19,93 +20,94 @@ export class FavsService {
   ) {}
 
   async createTrackFavorite(id: string) {
-    const track = await this.prisma.track.findFirst({ where: { id } });
-    if (typeof track === 'undefined' || !track)
-      throw new UnprocessableEntityException();
-    await this.prisma.track.update({
-      where: { id },
-      data: {
-        ...track,
-        favsTrack: true,
-      },
-    });
+    try {
+      await this.prisma.track.update({
+        where: { id },
+        data: { favsTrack: true },
+      });
+    } catch (err) {
+      throw new UnprocessableEntityException({}, `${err}`);
+    }
   }
 
   async createAlbumFavorite(id: string) {
-    const album = await this.prisma.album.findFirst({ where: { id } });
-    if (typeof album === 'undefined' || !album)
-      throw new UnprocessableEntityException();
-    await this.prisma.album.update({
-      where: { id },
-      data: {
-        ...album,
-        favsAlbum: true,
-      },
-    });
+    try {
+      await this.prisma.album.update({
+        where: { id },
+        data: { favsAlbum: true },
+      });
+    } catch (err) {
+      throw new UnprocessableEntityException({}, `${err}`);
+    }
   }
 
   async createArtistFavorite(id: string) {
-    const artist = await this.prisma.artist.findFirst({ where: { id } });
-    if (typeof artist === 'undefined' || !artist)
-      throw new UnprocessableEntityException();
-    await this.prisma.artist.update({
-      where: { id },
-      data: {
-        ...artist,
-        favsArtist: true,
-      },
-    });
+    try {
+      await this.prisma.artist.update({
+        where: { id },
+        data: { favsArtist: true },
+      });
+    } catch (err) {
+      throw new UnprocessableEntityException({}, `${err}`);
+    }
   }
 
   async removeTrackFromFavorite(id: string) {
-    const track = await this.prisma.track.findFirst({ where: { id } });
-    if (!track) {
-      throw new NotFoundException({}, 'Error');
+    try {
+      await this.prisma.track.update({
+        where: { id },
+        data: { favsTrack: false },
+      });
+    } catch (err) {
+      throw new NotFoundException({}, `${err}`);
     }
-    await this.prisma.track.update({
-      where: { id },
-      data: { ...track, favsTrack: false },
-    });
   }
 
   async removeAlbumFromFavorite(id: string) {
-    const album = await this.prisma.album.findFirst({ where: { id } });
-    if (!album) {
-      throw new NotFoundException({}, 'Error');
+    try {
+      await this.prisma.album.update({
+        where: { id },
+        data: { favsAlbum: false },
+      });
+    } catch (err) {
+      throw new NotFoundException({}, `${err}`);
     }
-    await this.prisma.album.update({
-      where: { id },
-      data: { ...album, favsAlbum: false },
-    });
   }
 
   async removeArtistFromFavorite(id: string) {
-    const artist = await this.prisma.artist.findFirst({ where: { id } });
-    if (!artist) {
-      throw new NotFoundException({}, 'Error');
+    try {
+      await this.prisma.artist.update({
+        where: { id },
+        data: { favsArtist: false },
+      });
+    } catch (err) {
+      throw new NotFoundException({}, `${err}`);
     }
-    await this.prisma.artist.update({
-      where: { id },
-      data: { ...artist, favsArtist: false },
-    });
   }
 
   async getAll() {
-    const resultAllTracks = await this.prisma.track.findMany({
-      where: { favsTrack: true },
-    });
-    const resultAllTracksCorr = removeFavsFieldFromTrack(resultAllTracks);
+    let resultAllTracksCorr = [];
+    let resultAllAlbumsCorr = [];
+    let resultAllArtistsCorr = [];
 
-    const resultAllAlbums = await this.prisma.album.findMany({
-      where: { favsAlbum: true },
-    });
-    const resultAllAlbumsCorr = removeFavsFieldFromAlbum(resultAllAlbums);
+    try {
+      const resultAllTracks = await this.prisma.track.findMany({
+        where: { favsTrack: true },
+      });
+      resultAllTracksCorr = removeFavsFieldFromTrack(resultAllTracks);
 
-    const resultAllArtists = await this.prisma.artist.findMany({
-      where: { favsArtist: true },
-    });
-    const resultAllArtistsCorr = removeFavsFieldFromArtist(resultAllArtists);
+      const resultAllAlbums = await this.prisma.album.findMany({
+        where: { favsAlbum: true },
+      });
+      resultAllAlbumsCorr = removeFavsFieldFromAlbum(resultAllAlbums);
 
+      const resultAllArtists = await this.prisma.artist.findMany({
+        where: { favsArtist: true },
+      });
+      resultAllArtistsCorr = removeFavsFieldFromArtist(resultAllArtists);
+    } catch (err) {
+      throw new BadRequestException({}, `${err}`);
+    }
     return {
       artists: resultAllArtistsCorr || [],
       albums: resultAllAlbumsCorr || [],
