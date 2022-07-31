@@ -11,6 +11,18 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "Favorites" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT,
+    "currentUserId" TEXT,
+    "artistID" TEXT[],
+    "albumID" TEXT[],
+    "trackID" TEXT[],
+
+    CONSTRAINT "Favorites_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Artist" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -42,6 +54,9 @@ CREATE TABLE "Track" (
 
     CONSTRAINT "Track_pkey" PRIMARY KEY ("id")
 );
+
+-- AddForeignKey
+ALTER TABLE "Favorites" ADD CONSTRAINT "Favorites_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Album" ADD CONSTRAINT "Album_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "Artist"("id") ON DELETE SET NULL ON UPDATE CASCADE;

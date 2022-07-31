@@ -4,6 +4,7 @@ import { IArtist } from '../modules/artist/models';
 import { IAlbum } from '../modules/album/models';
 import { ITrack } from '../modules/track/models';
 import { IFavorites } from '../modules/favs/models';
+import { string } from 'yaml/dist/schema/common/string';
 
 @Injectable()
 export class InMemoryUserStore {
@@ -15,9 +16,9 @@ export class InMemoryUserStore {
 
   tracks: ITrack[] = [];
 
-  favorites: IFavorites = {
-    artists: [],
-    albums: [],
-    tracks: [],
+  favorites: { artist: string[]; album: string[]; track: string[] } = {
+    album: [],
+    artist: [],
+    track: [],
   };
 }

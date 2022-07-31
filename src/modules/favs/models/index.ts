@@ -1,5 +1,5 @@
 export interface IFavorites {
-  artists: string[]; // favorite artists ids
-  albums: string[]; // favorite albums ids
-  tracks: string[]; // favorite tracks ids
+  artist: string[] | null; // favorite artists ids
+  album: string[] | null; // favorite albums ids
+  track: string[] | null; // favorite tracks ids
 }

@@ -44,9 +44,8 @@ export class TrackService {
     validateId404(id, await this.prisma.track.findMany());
     await this.prisma.track.delete({ where: { id } });
 
-    // this.store.favorites.tracks = this.store.favorites.tracks.filter(
-    //   (itemId) => itemId !== id,
-    // );
+    const result = await this.prisma.favorites.findFirst({ where: { id } });
+    if (result) await this.prisma.favorites.delete({ where: { id } });
 
     return `This action removes a #${id} track`;
   }

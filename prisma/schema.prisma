@@ -8,39 +8,51 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String      @id @default(uuid())
   login     String
   password  String
-  version   Int       @default(1)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  version   Int         @default(1)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  Favorites Favorites[]
 }
+
+model Favorites {
+  id            String   @id @default(uuid())
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId        String?
+  currentUserId String?
+  artistID      String[]
+  albumID       String[]
+  trackID       String[]
+}
+
 model Artist {
-  id  String @id @default(uuid())
-  name String
-  grammy Boolean
+  id         String  @id @default(uuid())
+  name       String
+  grammy     Boolean
   albums     Album[]
   tracks     Track[]
-  favsArtist Boolean   @default(false)
+  favsArtist Boolean @default(false)
 }
 
 model Album {
-  id         String    @id @default(uuid())
-  name       String
-  year       Int
-  artist     Artist?   @relation(fields: [artistId], references: [id], onDelete: SetNull)
-  artistId   String?
-  tracks     Track[]
-  favsAlbum  Boolean @default(false)
+  id        String  @id @default(uuid())
+  name      String
+  year      Int
+  artist    Artist? @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId  String?
+  tracks    Track[]
+  favsAlbum Boolean @default(false)
 }
 
 model Track {
-  artist     Artist?   @relation(fields: [artistId], references: [id], onDelete: SetNull)
-  artistId   String?
-  albums     Album?    @relation(fields: [albumId], references: [id], onDelete: SetNull)
-  albumId    String?
-  favsTrack  Boolean   @default(false)
-  id         String    @id @default(uuid())
-  name       String
-  duration   Int
+  artist    Artist? @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  artistId  String?
+  albums    Album?  @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  albumId   String?
+  favsTrack Boolean @default(false)
+  id        String  @id @default(uuid())
+  name      String
+  duration  Int
 }

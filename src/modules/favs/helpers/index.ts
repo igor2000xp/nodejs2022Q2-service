@@ -1,6 +1,46 @@
 import { TrackEntity } from '../../track/entities/track.entity';
 import { ArtistEntity } from '../../artist/entities/artist.entity';
 import { AlbumEntity } from '../../album/entities/album.entity';
+import * as uuid from 'uuid';
+import { ITrack } from '../../track/models';
+import { IAlbum } from '../../album/models';
+import { IArtist } from '../../artist/models';
+
+export const createCurrentUserId = async (users, id: string) => {
+  return {
+    currentUserId: users.length ? users[users.length - 1].id : uuid.v4(),
+    trackID: id,
+    id,
+  };
+};
+
+export const createObjForReturnTrack = (track: ITrack): ITrack => {
+  return {
+    albumId: track.albumId ? track.albumId : null,
+    artistId: track.artistId ? track.artistId : null,
+    duration: track.duration,
+    id: track.id,
+    name: track.name,
+  };
+};
+
+export const createObjForReturnAlbum = (album: IAlbum): IAlbum => {
+  return {
+    artistId: album.artistId ? album.artistId : null,
+    year: album.year,
+    id: album.id,
+    name: album.name,
+  };
+};
+
+export const createObjForReturnArtist = (artist: IArtist): IArtist => {
+  return {
+    // artistId: artist.artistId ? artist.artistId : null,
+    grammy: artist.grammy,
+    id: artist.id,
+    name: artist.name,
+  };
+};
 
 export const removeFavsFieldFromTrack = (tracks: TrackEntity[]) => {
   return tracks.map((item) => {
