@@ -1,6 +1,5 @@
 import { HttpException } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-// import { IArtist } from '../models';
 import * as uuid from 'uuid';
 import { CreateArtistDto } from '../dto/create-artist.dto';
 import { ArtistEntity } from '../entities/artist.entity';

@@ -1,14 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-// import { InMemoryUserStore } from '../../store/in-memory-user-store';
 import { checkFields, createNewTrack, validateId404 } from './helpers';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class TrackService {
   constructor(private prisma: PrismaService) {}
-  // private store: InMemoryUserStore,
 
   async create(createTrackDto: CreateTrackDto) {
     try {
@@ -21,7 +19,6 @@ export class TrackService {
 
   async findAll() {
     return await this.prisma.track.findMany();
-    // return await this.prisma.track.findMany();
   }
 
   async findOne(id: string) {
@@ -42,8 +39,6 @@ export class TrackService {
 
   async remove(id: string) {
     validateId404(id, await this.prisma.track.findMany());
-    // const isTrack = await this.prisma.track.findFirst({ where: { id } });
-    // if (!isTrack)
     await this.prisma.track.delete({ where: { id } });
 
     const result = await this.prisma.favorites.findFirst({ where: { id } });
