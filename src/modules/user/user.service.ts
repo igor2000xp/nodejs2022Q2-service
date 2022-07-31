@@ -10,13 +10,11 @@ import {
   validateId404,
 } from './helpers';
 import { UserEntity } from './entities/user.entity';
-// import { IUser, IUserForPrint } from './models';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
-  // private storage: InMemoryUserStore,
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     isFieldsExist(createUserDto);

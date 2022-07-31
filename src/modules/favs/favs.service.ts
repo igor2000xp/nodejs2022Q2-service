@@ -18,10 +18,7 @@ import { IArtist } from '../artist/models';
 
 @Injectable()
 export class FavsService {
-  constructor(
-    // private store: InMemoryUserStore,
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async createTrackFavorite(id: string) {
     const isTrack = await this.prisma.track.findFirst({ where: { id } });
@@ -155,7 +152,6 @@ export class FavsService {
           typeof album !== 'undefined' || null
             ? {
                 artistId: album.artistId,
-                // albumId: album.albumId,
                 year: album.year,
                 name: album.name,
                 id: item.id,
