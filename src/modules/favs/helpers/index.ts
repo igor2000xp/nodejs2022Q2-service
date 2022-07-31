@@ -6,12 +6,34 @@ import { ITrack } from '../../track/models';
 import { IAlbum } from '../../album/models';
 import { IArtist } from '../../artist/models';
 
-export const createCurrentUserId = async (users, id: string) => {
-  return {
+interface IDataFavs {
+  trackID?: string | null;
+  artistID?: string | null;
+  albumID?: string | null;
+}
+
+export const createCurrentUserId = async (users, id: string, mark: string) => {
+  const data: IDataFavs = {};
+  switch (mark) {
+    case 'track':
+      data.trackID = id;
+      break;
+    case 'artist':
+      data.artistID = id;
+      break;
+    case 'album':
+      data.albumID = id;
+      break;
+  }
+  const result = {
     currentUserId: users.length ? users[users.length - 1].id : uuid.v4(),
-    trackID: id,
+    trackID: data.trackID || '',
+    albumID: data.albumID || '',
+    artistID: data.artistID || '',
     id,
   };
+
+  return result;
 };
 
 export const createObjForReturnTrack = (track: ITrack): ITrack => {

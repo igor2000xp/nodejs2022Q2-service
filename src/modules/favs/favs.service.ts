@@ -25,9 +25,16 @@ export class FavsService {
   ) {}
 
   async createTrackFavorite(id: string) {
+    const isTrack = await this.prisma.track.findFirst({ where: { id } });
+    if (!isTrack) throw new UnprocessableEntityException();
     try {
       const data: Prisma.FavoritesUncheckedCreateInput =
-        await createCurrentUserId(await this.prisma.user.findMany(), id);
+        await createCurrentUserId(
+          await this.prisma.user.findMany(),
+          id,
+          'track',
+        );
+      // console.log(data);
 
       const trackCheck = await this.prisma.favorites.findFirst({
         where: { id },
@@ -43,6 +50,8 @@ export class FavsService {
   }
 
   async createAlbumFavorite(id: string) {
+    const isAlbum = await this.prisma.album.findFirst({ where: { id } });
+    if (!isAlbum) throw new UnprocessableEntityException();
     try {
       // await this.prisma.album.update({
       //   where: { id },
@@ -50,7 +59,11 @@ export class FavsService {
       // });
 
       const data: Prisma.FavoritesUncheckedCreateInput =
-        await createCurrentUserId(await this.prisma.user.findMany(), id);
+        await createCurrentUserId(
+          await this.prisma.user.findMany(),
+          id,
+          'album',
+        );
 
       const albumCheck = await this.prisma.favorites.findFirst({
         where: { id },
@@ -66,13 +79,19 @@ export class FavsService {
   }
 
   async createArtistFavorite(id: string) {
+    const isArtist = await this.prisma.artist.findFirst({ where: { id } });
+    if (!isArtist) throw new UnprocessableEntityException();
     try {
       // await this.prisma.artist.update({
       //   where: { id },
       //   data: { favsArtist: true },
       // });
       const data: Prisma.FavoritesUncheckedCreateInput =
-        await createCurrentUserId(await this.prisma.user.findMany(), id);
+        await createCurrentUserId(
+          await this.prisma.user.findMany(),
+          id,
+          'artist',
+        );
 
       const artistCheck = await this.prisma.favorites.findFirst({
         where: { id },
@@ -108,7 +127,7 @@ export class FavsService {
       //   data: { favsAlbum: false },
       // });
       await this.prisma.album.findFirst({ where: { id } });
-      await this.prisma.album.delete({ where: { id } });
+      await this.prisma.favorites.delete({ where: { id } });
     } catch (err) {
       // console.log(id);
       throw new NotFoundException({}, `${err}`);

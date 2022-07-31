@@ -42,6 +42,8 @@ export class TrackService {
 
   async remove(id: string) {
     validateId404(id, await this.prisma.track.findMany());
+    // const isTrack = await this.prisma.track.findFirst({ where: { id } });
+    // if (!isTrack)
     await this.prisma.track.delete({ where: { id } });
 
     const result = await this.prisma.favorites.findFirst({ where: { id } });
