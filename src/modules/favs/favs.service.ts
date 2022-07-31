@@ -10,7 +10,6 @@ import {
   createObjForReturnAlbum,
   createObjForReturnArtist,
   createObjForReturnTrack,
-  removeFavsFieldFromArtist,
 } from './helpers';
 import { Prisma } from '.prisma/client';
 import { ITrack } from '../track/models';
@@ -34,7 +33,6 @@ export class FavsService {
           id,
           'track',
         );
-      // console.log(data);
 
       const trackCheck = await this.prisma.favorites.findFirst({
         where: { id },
@@ -53,11 +51,6 @@ export class FavsService {
     const isAlbum = await this.prisma.album.findFirst({ where: { id } });
     if (!isAlbum) throw new UnprocessableEntityException();
     try {
-      // await this.prisma.album.update({
-      //   where: { id },
-      //   data: { favsAlbum: true },
-      // });
-
       const data: Prisma.FavoritesUncheckedCreateInput =
         await createCurrentUserId(
           await this.prisma.user.findMany(),
@@ -82,10 +75,6 @@ export class FavsService {
     const isArtist = await this.prisma.artist.findFirst({ where: { id } });
     if (!isArtist) throw new UnprocessableEntityException();
     try {
-      // await this.prisma.artist.update({
-      //   where: { id },
-      //   data: { favsArtist: true },
-      // });
       const data: Prisma.FavoritesUncheckedCreateInput =
         await createCurrentUserId(
           await this.prisma.user.findMany(),
@@ -97,11 +86,6 @@ export class FavsService {
         where: { id },
       });
       if (!artistCheck) await this.prisma.favorites.create({ data });
-      // console.log(
-      //   createObjForReturnArtist(
-      //     await this.prisma.artist.findFirst({ where: { id } }),
-      //   ),
-      // );
 
       return createObjForReturnArtist(
         await this.prisma.artist.findFirst({ where: { id } }),
@@ -122,24 +106,15 @@ export class FavsService {
 
   async removeAlbumFromFavorite(id: string) {
     try {
-      // await this.prisma.album.update({
-      //   where: { id },
-      //   data: { favsAlbum: false },
-      // });
       await this.prisma.album.findFirst({ where: { id } });
       await this.prisma.favorites.delete({ where: { id } });
     } catch (err) {
-      // console.log(id);
       throw new NotFoundException({}, `${err}`);
     }
   }
 
   async removeArtistFromFavorite(id: string) {
     try {
-      // await this.prisma.artist.update({
-      //   where: { id },
-      //   data: { favsArtist: false },
-      // });
       await this.prisma.artist.findFirst({ where: { id } });
       await this.prisma.favorites.delete({ where: { id } });
     } catch (err) {
@@ -173,9 +148,6 @@ export class FavsService {
       });
 
       const resultAllAlbums: IAlbum[] = await this.prisma.favorites.findMany();
-      //   where: { favsAlbum: true },
-      // });
-      // resultAllAlbumsCorr = removeFavsFieldFromAlbum(resultAllAlbums);
       const albums: IAlbum[] = await this.prisma.album.findMany();
       resultAllAlbumsCorr = resultAllAlbums.map((item) => {
         const album: IAlbum = albums.find((al) => al.id === item.id);
@@ -194,17 +166,12 @@ export class FavsService {
       });
 
       const resultAllArtists = await this.prisma.favorites.findMany();
-      //   where: { favsArtist: true },
-      // });
-      // resultAllArtistsCorr = removeFavsFieldFromArtist(resultAllArtists);
       const artists: IArtist[] = await this.prisma.artist.findMany();
       resultAllArtistsCorr = resultAllArtists.map((item) => {
         const artist: IArtist = artists.find((ar) => ar.id === item.id);
         const newAlbum: IArtist =
           typeof artist !== 'undefined' || null
             ? {
-                // artistId: artist.artistId,
-                // albumId: album.albumId,
                 grammy: artist.grammy,
                 name: artist.name,
                 id: item.id,
