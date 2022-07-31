@@ -1,8 +1,7 @@
 import { HttpException } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
-// import { IAlbum } from '../models';
-import { CreateAlbumDto } from '../dto/create-album.dto';
 import * as uuid from 'uuid';
+import { CreateAlbumDto } from '../dto/create-album.dto';
 import { UpdateAlbumDto } from '../dto/update-album.dto';
 import { AlbumEntity } from '../entities/album.entity';
 
@@ -35,7 +34,7 @@ export const checkFields = (updateAlbumDto: UpdateAlbumDto) => {
     throw new HttpException(
       {
         state: StatusCodes.BAD_REQUEST,
-        error: '',
+        error: 'BAD_REQUEST',
       },
       StatusCodes.BAD_REQUEST,
     );

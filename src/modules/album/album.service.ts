@@ -9,7 +9,6 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import { InMemoryUserStore } from '../../store/in-memory-user-store';
 import { checkFields, createNewAlbum, validateId404 } from './helpers';
 import { PrismaService } from '../../prisma/prisma.service';
-import { StatusCodes } from 'http-status-codes';
 
 @Injectable()
 export class AlbumService {
@@ -50,64 +49,18 @@ export class AlbumService {
   }
 
   async remove(id: string) {
-    // validateId404(id, await this.prisma.album.findMany());
-    // this.store.albums = this.store.albums.filter((item) => item.id !== id);
-    // try {
-    let isAlbumFavsDeleted = false;
-    let isAlbumDeleted = false;
-    let result;
-
     const isAlbumInFavs = await this.prisma.favorites.findFirst({
       where: { id },
     });
     if (isAlbumInFavs) {
       await this.prisma.favorites.delete({ where: { id } });
-      console.log('204 Favs');
-      isAlbumFavsDeleted = true;
     }
-    // console.log(id);
 
     const isAlbum = await this.prisma.album.findFirst({ where: { id } });
     if (isAlbum) {
-      result = await this.prisma.album.delete({ where: { id } });
-      isAlbumDeleted = true;
-      console.log('204');
-      console.log(result);
-      // return result;
+      return this.prisma.album.delete({ where: { id } });
     }
-    if (isAlbumDeleted) return result;
-    console.log('404');
-    console.log(isAlbum);
 
-    // const isArtist = await this.prisma.favorites.findFirst({ where: { id } });
-    // if (!isArtist) return await this.prisma.favorites.delete({ where: { id } });
-    console.log(id);
-    // return await this.prisma.album.delete({ where: { id } });
-    // return;
     throw new NotFoundException();
-
-    // } catch (err) {
-    //   throw new HttpException(
-    //     {
-    //       state: StatusCodes.NOT_FOUND,
-    //       error: "record with id === userId doesn't exist",
-    //     },
-    //     StatusCodes.NOT_FOUND,
-    //   );
-    // }
   }
-
-  // this.store.tracks.forEach((track, index) => {
-  //   if (track.albumId === id) this.store.tracks[index].albumId = null;
-  // });
-
-  //
-  // const trackListToClean = await this.prisma.track.findMany({ where:  })
-
-  //
-  // this.store.favorites.albums = this.store.favorites.albums.filter(
-  //   (itemId) => itemId !== id,
-  // );
-  // return `This action removes a #${id} album`;
-  // }
 }
