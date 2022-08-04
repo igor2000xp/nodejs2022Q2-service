@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -25,8 +24,10 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async login(@Request() req) {
-    return await this.authService.login(req.user);
+  // async login(@Request() req) {
+  async login(@Body() updateAuthDto: UpdateAuthDto) {
+    // return await this.authService.login(req.user);
+    return await this.authService.login(updateAuthDto);
   }
 
   @Post('refresh')

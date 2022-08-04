@@ -5,7 +5,7 @@ import { IUserForPrint } from '../user/models';
 import { JwtService } from '@nestjs/jwt';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { AuthEntity } from './entities/auth.entity';
+// import { AuthEntity } from './entities/auth.entity';
 
 @Injectable()
 export class AuthService {
@@ -34,11 +34,13 @@ export class AuthService {
   //   };
   // }
 
-  async login(user: AuthEntity) {
+  async login(user: UpdateAuthDto) {
     const payload = { username: user.login, sub: user.password };
     return {
       access_token: this.jwtService.sign(payload),
     };
+    // console.log(user);
+    // return user;
   }
 
   async signup(createAuthDto: CreateAuthDto) {
