@@ -31,8 +31,15 @@ export class UserController {
   }
 
   @Get(':id')
+  @HttpCode(StatusCodes.OK)
   async getById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.userService.getById(id);
+  }
+
+  @Get(':id')
+  @HttpCode(StatusCodes.OK)
+  async getByLogin(@Param('login') login: string) {
+    return await this.userService.getByLogin(login);
   }
 
   @Put(':id')

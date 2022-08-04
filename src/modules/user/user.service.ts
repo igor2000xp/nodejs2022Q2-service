@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -32,6 +32,17 @@ export class UserService {
     return await this.prisma.user.findFirst({
       where: { id },
     });
+  }
+
+  async getByLogin(login: string) {
+    // await validateId404(id, await this.prisma.user.findMany());
+    try {
+      return await this.prisma.user.findFirst({
+        where: { login },
+      });
+    } catch (err) {
+      throw new NotFoundException(err);
+    }
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
