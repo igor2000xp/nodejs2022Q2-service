@@ -21,6 +21,13 @@ yarn install
 
 to `.env` and enter the number of port.
 
+## Вимание!
+
+Приложение настроено для работы локально (контейнер nest-js при этом останавливается, а приложение запускается на компьютере start:dev) с базой данных из контейнера postgres. Для того, чтобы приложение запускалось из контейнера, а локальное приложение "работало параллельно" нужно в файле .env заменить строчку:
+__DATABASE_URL="postgresql://admin:admin@postgres:5432/nestjs?schema=public"__
+
+т.е. __localhost:5432__ заменить на __postgres:5432__ в этой строке.
+
 ## Running application
 
 ```
