@@ -12,7 +12,6 @@ import {
 } from './helpers';
 import { UserEntity } from './entities/user.entity';
 import { PrismaService } from '../../prisma/prisma.service';
-// import { IUser } from './models';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -51,21 +50,14 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     isFieldsExistPass(updateUserDto);
     await validateId404(id, await this.prisma.user.findMany());
-    // const users = await this.prisma.user.findMany();
-    // const user = users.find((usr) => usr.id === id);
     const user = await this.prisma.user.findFirst({ where: { id } });
     await checkOldPassword(updateUserDto.oldPassword, user);
+
     const salt = Number(process.env.CRYPT_SALT);
-    console.log(updateUserDto);
     const newPasswordHash = await bcrypt.hash(updateUserDto.newPassword, salt);
-    console.log(newPasswordHash);
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: {
-        // password: await bcrypt.hash(
-        //   updateUserDto.newPassword,
-        //   Number(process.env.CRYPT_SALT),
-        // ),
         password: newPasswordHash,
         version: { increment: 1 },
         updatedAt: new Date(),

@@ -26,14 +26,11 @@ export const checkOldPassword = async (
   oldPass: string,
   user: any,
 ): Promise<boolean> => {
-  // if (user.password === oldPass) {
-  // console.log(user.password);
   const isPasswordRight = await bcrypt.compare(oldPass, user.password);
-  // console.log(user.password);
+
   if (isPasswordRight) {
     return true;
   } else {
-    // console.log('checkOldPassword - error');
     throw new HttpException(
       {
         status: StatusCodes.FORBIDDEN,
@@ -49,22 +46,12 @@ export const createNewUser = async (
 ): Promise<UserEntity> => {
   const createTime = new Date();
   const salt = Number(process.env.CRYPT_SALT);
-  // console.log(createUserDto);
-  // console.log(createUserDto.password);
-  // let passHash: string;
-  // const passHash = await bcrypt.hash('secret', 10);
-  // await bcrypt.hash('secret', 10, function (err, hash) {
-  //   passHash = hash;
-  // });
-  // const passHash = await bcrypt.hash('secret', salt);
-  // console.log(passHash);
   const passwordHash = await bcrypt.hash(createUserDto.password, salt);
-  // console.log(passwordHash);
+
   return new UserEntity({
     createdAt: createTime,
     updatedAt: createTime,
     ...createUserDto,
-    // password: await bcrypt.hash(createUserDto.password, salt),
     password: passwordHash,
   });
 };
