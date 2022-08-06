@@ -5,6 +5,7 @@ import { TrackModule } from './track/track.module';
 import { AlbumModule } from './album/album.module';
 import { FavsModule } from './favs/favs.module';
 import { AuthModule } from './auth/auth.module';
+import { LoggerService } from './logger/logger/logger.service';
 
 @Module({
   imports: [
@@ -15,5 +16,6 @@ import { AuthModule } from './auth/auth.module';
     FavsModule,
     AuthModule,
   ],
+  providers: [LoggerService],
 })
 export class RootModule {}
