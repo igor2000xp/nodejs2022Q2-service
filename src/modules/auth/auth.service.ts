@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 // import { PrismaService } from '../../prisma/prisma.service';
 import { IUserForPrint } from '../user/models';
 import { JwtService } from '@nestjs/jwt';
+import bcrypt from 'bcrypt';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 // import { AuthEntity } from './entities/auth.entity';
@@ -16,7 +17,8 @@ export class AuthService {
 
   async validateUser(login: string, pass: string): Promise<IUserForPrint> {
     const user = await this.usersService.getByLogin(login);
-    if (user && user.password === pass) {
+    const isPasswordRight = bcrypt.compare(pass, user.password);
+    if (isPasswordRight) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       return result;
@@ -35,12 +37,25 @@ export class AuthService {
   // }
 
   async login(user: UpdateAuthDto) {
-    const payload = { username: user.login, sub: user.password };
-    return {
-      access_token: this.jwtService.sign(payload),
+    const userByLog = await this.usersService.userByLogin({
+      login: user.login,
+    });
+    console.log(user);
+    console.log(userByLog);
+    const payload = {
+      id: userByLog.id,
+      login: user.login,
     };
-    // console.log(user);
-    // return user;
+    let options = { expiresIn: process.env.TOKEN_EXPIRE_TIME };
+    const accessToken = await this.jwtService.signAsync(payload, options);
+
+    options = { expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME };
+    const refreshToken = await this.jwtService.signAsync(payload, options);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   async signup(createAuthDto: CreateAuthDto) {

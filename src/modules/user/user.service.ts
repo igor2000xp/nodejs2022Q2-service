@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Prisma } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
   checkOldPassword,
@@ -11,6 +12,8 @@ import {
 } from './helpers';
 import { UserEntity } from './entities/user.entity';
 import { PrismaService } from '../../prisma/prisma.service';
+// import { IUser } from './models';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -18,7 +21,7 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     isFieldsExist(createUserDto);
-    const userObj = createNewUser(createUserDto);
+    const userObj = await createNewUser(createUserDto);
     const newUser = await this.prisma.user.create({ data: userObj });
     return plainToInstance(UserEntity, newUser);
   }
@@ -48,17 +51,22 @@ export class UserService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     isFieldsExistPass(updateUserDto);
     await validateId404(id, await this.prisma.user.findMany());
-    const users = await this.prisma.user.findMany();
-    const user = users.find((usr) => usr.id === id);
-    checkOldPassword(
-      updateUserDto.oldPassword,
-      updateUserDto.newPassword,
-      user,
-    );
+    // const users = await this.prisma.user.findMany();
+    // const user = users.find((usr) => usr.id === id);
+    const user = await this.prisma.user.findFirst({ where: { id } });
+    await checkOldPassword(updateUserDto.oldPassword, user);
+    const salt = Number(process.env.CRYPT_SALT);
+    console.log(updateUserDto);
+    const newPasswordHash = await bcrypt.hash(updateUserDto.newPassword, salt);
+    console.log(newPasswordHash);
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: {
-        password: updateUserDto.newPassword,
+        // password: await bcrypt.hash(
+        //   updateUserDto.newPassword,
+        //   Number(process.env.CRYPT_SALT),
+        // ),
+        password: newPasswordHash,
         version: { increment: 1 },
         updatedAt: new Date(),
       },
@@ -71,5 +79,13 @@ export class UserService {
     await validateId404(id, await this.prisma.user.findMany());
     await this.prisma.user.delete({ where: { id } });
     return `This action removes a #${id} user`;
+  }
+
+  async userByLogin(
+    userWhereInput: Prisma.UserWhereInput,
+  ): Promise<UserEntity | null> {
+    return await this.prisma.user.findFirst({
+      where: userWhereInput,
+    });
   }
 }

@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { StatusCodes } from 'http-status-codes';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
@@ -21,14 +22,18 @@ export const validateId404 = async (
   }
 };
 
-export const checkOldPassword = (
+export const checkOldPassword = async (
   oldPass: string,
-  newPass: string,
   user: any,
-): boolean => {
-  if (user.password === oldPass) {
+): Promise<boolean> => {
+  // if (user.password === oldPass) {
+  // console.log(user.password);
+  const isPasswordRight = await bcrypt.compare(oldPass, user.password);
+  // console.log(user.password);
+  if (isPasswordRight) {
     return true;
   } else {
+    // console.log('checkOldPassword - error');
     throw new HttpException(
       {
         status: StatusCodes.FORBIDDEN,
@@ -39,12 +44,28 @@ export const checkOldPassword = (
   }
 };
 
-export const createNewUser = (createUserDto: CreateUserDto): UserEntity => {
+export const createNewUser = async (
+  createUserDto: CreateUserDto,
+): Promise<UserEntity> => {
   const createTime = new Date();
+  const salt = Number(process.env.CRYPT_SALT);
+  // console.log(createUserDto);
+  // console.log(createUserDto.password);
+  // let passHash: string;
+  // const passHash = await bcrypt.hash('secret', 10);
+  // await bcrypt.hash('secret', 10, function (err, hash) {
+  //   passHash = hash;
+  // });
+  // const passHash = await bcrypt.hash('secret', salt);
+  // console.log(passHash);
+  const passwordHash = await bcrypt.hash(createUserDto.password, salt);
+  // console.log(passwordHash);
   return new UserEntity({
     createdAt: createTime,
     updatedAt: createTime,
     ...createUserDto,
+    // password: await bcrypt.hash(createUserDto.password, salt),
+    password: passwordHash,
   });
 };
 
