@@ -5,7 +5,7 @@ import { TrackModule } from './track/track.module';
 import { AlbumModule } from './album/album.module';
 import { FavsModule } from './favs/favs.module';
 import { AuthModule } from './auth/auth.module';
-import { LoggingService } from './logging/logging.service';
+import { LoggingService } from './logging/my-logging.service';
 
 @Module({
   imports: [
