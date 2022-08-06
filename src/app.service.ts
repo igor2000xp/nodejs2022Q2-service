@@ -9,9 +9,9 @@ export class AppService {
   }
 
   getHello(): string {
-    this.logger.log('test');
-    this.logger.debug('test2');
-    this.logger.debug('test3');
+    // this.logger.log('test');
+    // this.logger.debug('test2');
+    // this.logger.error('test3');
     return 'Hello World!';
   }
 }
