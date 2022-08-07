@@ -26,22 +26,12 @@ export class AuthService {
     return null;
   }
 
-  // async login(createAuthDto: CreateAuthDto) {
-  //   const payload = {
-  //     username: createAuthDto.login,
-  //     sub: createAuthDto.password,
-  //   };
-  //   return {
-  //     access_token: this.jwtService.sign(payload),
-  //   };
-  // }
-
   async login(user: UpdateAuthDto) {
     const userByLog = await this.usersService.userByLogin({
       login: user.login,
     });
-    console.log(user);
-    console.log(userByLog);
+    // console.log(user);
+    // console.log(userByLog);
     const payload = {
       id: userByLog.id,
       login: user.login,
