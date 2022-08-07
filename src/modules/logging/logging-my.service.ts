@@ -3,7 +3,7 @@
 // @Injectable()
 // export class LoggingMyService {}
 
-import { ConsoleLogger, LoggerService } from '@nestjs/common';
+import { ConsoleLogger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { getLevel } from './helpers';
 
@@ -19,8 +19,9 @@ export class LoggingMyService extends ConsoleLogger {
     //   ...options,
     // });
     super();
-    this.setLogLevels(getLevel(config.get('LOG_LEVEL')));
-    this.fileSize = Number(config.get('LOG_FILE_SIZE_KB'));
+    this.setLogLevels(getLevel(this.config.get('LOG_LEVEL')));
+    // this.setLogLevels(['log', 'error']);
+    this.fileSize = Number(this.config.get('LOG_FILE_SIZE_KB'));
     // console.log(this.fileSize);
     // console.log(config.get('LOG_LEVEL'));
   }

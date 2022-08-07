@@ -10,7 +10,6 @@ import { LoggingService } from './modules/logging/logging-service';
 @Module({
   imports: [
     RootModule,
-    ConfigModule.forRoot(),
     PrismaModule,
     ConfigModule.forRoot({
       isGlobal: true,

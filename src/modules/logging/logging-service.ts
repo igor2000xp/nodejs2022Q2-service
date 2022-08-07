@@ -1,4 +1,4 @@
-import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { LoggingMyService } from './logging-my.service';
@@ -24,7 +24,7 @@ export class LoggingService implements NestMiddleware {
       // const contentLength = response.get('content-length');
       // this.logger.log()
 
-      this.logger.debug(
+      this.logger.log(
         `${method} ${originalUrl} ${statusCode} ${JSON.stringify(
           body,
         )} ${JSON.stringify(params)}`,
