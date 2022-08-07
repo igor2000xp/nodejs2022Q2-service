@@ -38,6 +38,7 @@
     "class-validator": "^0.13.2",
     "dotenv": "^16.0.1",
     "http-status-codes": "^2.2.0",
+    "joi": "^17.6.0",
     "node-gyp": "^9.1.0",
     "oauth2orize": "^1.11.1",
     "passport": "^0.6.0",

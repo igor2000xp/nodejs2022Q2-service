@@ -5,7 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  Header,
+  Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -15,19 +15,19 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
+  private logger = new Logger('Authentication');
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  @Header('Content-Type', 'application/json')
   async signup(@Body() createAuthDto: CreateAuthDto) {
+    this.logger.verbose(`create new user ${JSON.stringify(createAuthDto)}`);
     return await this.authService.signup(createAuthDto);
   }
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Header('Content-Type', 'application/json')
   // async login(@Request() req) {
   async login(@Body() updateAuthDto: UpdateAuthDto) {
     // return await this.authService.login(req.user);
@@ -37,7 +37,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  @Header('Content-Type', 'application/json')
   async refresh(@Body() updateAuthDto: UpdateAuthDto) {
     return await this.authService.refresh(updateAuthDto);
   }
