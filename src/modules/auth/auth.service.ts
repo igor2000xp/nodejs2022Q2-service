@@ -4,7 +4,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-// import { PrismaService } from '../../prisma/prisma.service';
 import { IUserForPrint } from '../user/models';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
@@ -12,9 +11,6 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { ConfigService } from '@nestjs/config';
 import { RefreshAuthDto } from './dto/refresh-auth.dto';
-// import { getTokens } from './helpers';
-
-// import { AuthEntity } from './entities/auth.entity';
 
 interface IPayLoad {
   id: string;
@@ -23,14 +19,11 @@ interface IPayLoad {
 
 @Injectable()
 export class AuthService {
-  private secret: string;
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
     private config: ConfigService,
-  ) {
-    // this.secret = this.config.get('JWT_ACCESS_TOKEN_SECRET');
-  }
+  ) {}
 
   async validateUser(login: string, pass: string): Promise<IUserForPrint> {
     const user = await this.usersService.getByLogin(login);
@@ -48,8 +41,6 @@ export class AuthService {
       login: user.login,
     });
     if (!userByLog) throw new BadRequestException();
-    // console.log(user);
-    // console.log(userByLog);
 
     try {
       const payload: IPayLoad = {
@@ -75,12 +66,7 @@ export class AuthService {
     return await this.usersService.create(createAuthDto);
   }
 
-  // async refresh(updateAuthDto: UpdateAuthDto) {
-  //   return updateAuthDto.login;
-  // }
-
   async refresh(refreshAuthDto: RefreshAuthDto) {
-    // id, login
     return this.getTokens(refreshAuthDto);
   }
 
@@ -92,7 +78,6 @@ export class AuthService {
 
     const accessToken = this.getAccessToken(id, login);
     const refreshToken = this.getRefreshToken(id, login);
-    // await this.usersService.setRefreshToken(id, refreshToken.refresToken);
 
     return {
       ...accessToken,
@@ -110,10 +95,6 @@ export class AuthService {
       accessToken: token,
     };
   }
-  // const payload = {
-  //   id: userByLog.id,
-  //   login: user.login,
-  // };
 
   async getRefreshToken(id: string, login: string) {
     const payload = { id, login };

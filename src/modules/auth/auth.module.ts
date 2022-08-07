@@ -7,7 +7,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-// import { ConfigService } from '@nestjs/config';
 
 @Module({
   providers: [AuthService, LocalStrategy, JwtStrategy],
@@ -19,14 +18,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       useFactory: async (config: ConfigService) => ({
         secret: process.env.JWT_SECRET_KEY,
         signOptions: { expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME },
       }),
     }),
-    // secret: process.env.JWT_SECRET_KEY,
-    // signOptions: { expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME },
-    // ),
   ],
   exports: [AuthService],
 })
