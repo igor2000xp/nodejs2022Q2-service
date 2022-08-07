@@ -80,4 +80,8 @@ export class UserService {
       where: userWhereInput,
     });
   }
+
+  // async validateUser(login: Prisma.UserWhereInput) {
+  //   return await this.userByLogin(login);
+  // }
 }

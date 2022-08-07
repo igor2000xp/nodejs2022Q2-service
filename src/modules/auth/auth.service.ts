@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 // import { PrismaService } from '../../prisma/prisma.service';
 import { IUserForPrint } from '../user/models';
@@ -6,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+
 // import { AuthEntity } from './entities/auth.entity';
 
 @Injectable()
@@ -30,26 +35,32 @@ export class AuthService {
     const userByLog = await this.usersService.userByLogin({
       login: user.login,
     });
+    if (!userByLog) throw new BadRequestException();
     // console.log(user);
     // console.log(userByLog);
-    const payload = {
-      id: userByLog.id,
-      login: user.login,
-    };
-    let options = { expiresIn: process.env.TOKEN_EXPIRE_TIME };
-    const accessToken = await this.jwtService.signAsync(payload, options);
 
-    options = { expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME };
-    const refreshToken = await this.jwtService.signAsync(payload, options);
+    try {
+      const payload = {
+        id: userByLog.id,
+        login: user.login,
+      };
+      let options = { expiresIn: process.env.TOKEN_EXPIRE_TIME };
+      const accessToken = await this.jwtService.signAsync(payload, options);
 
-    return {
-      accessToken,
-      refreshToken,
-    };
+      options = { expiresIn: process.env.TOKEN_REFRESH_EXPIRE_TIME };
+      const refreshToken = await this.jwtService.signAsync(payload, options);
+
+      return {
+        accessToken,
+        refreshToken,
+      };
+    } catch (err) {
+      throw new ForbiddenException();
+    }
   }
 
   async signup(createAuthDto: CreateAuthDto) {
-    return createAuthDto;
+    return await this.usersService.create(createAuthDto);
   }
 
   async refresh(updateAuthDto: UpdateAuthDto) {

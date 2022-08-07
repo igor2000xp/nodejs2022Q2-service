@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Header,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -18,6 +19,7 @@ export class AuthController {
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
+  @Header('Content-Type', 'application/json')
   async signup(@Body() createAuthDto: CreateAuthDto) {
     return await this.authService.signup(createAuthDto);
   }
@@ -25,6 +27,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
+  @Header('Content-Type', 'application/json')
   // async login(@Request() req) {
   async login(@Body() updateAuthDto: UpdateAuthDto) {
     // return await this.authService.login(req.user);
@@ -34,28 +37,8 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
+  @Header('Content-Type', 'application/json')
   async refresh(@Body() updateAuthDto: UpdateAuthDto) {
     return await this.authService.refresh(updateAuthDto);
   }
-
-  //
-  // @Get()
-  // findAll() {
-  //   return this.authService.findAll();
-  // }
-  //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // }
-  //
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-  //   return this.authService.update(+id, updateAuthDto);
-  // }
-  //
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.authService.remove(+id);
-  // }
 }
