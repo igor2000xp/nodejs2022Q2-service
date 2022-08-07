@@ -37,7 +37,6 @@ export class UserService {
   }
 
   async getByLogin(login: string) {
-    // await validateId404(id, await this.prisma.user.findMany());
     try {
       return await this.prisma.user.findFirst({
         where: { login },
@@ -80,8 +79,4 @@ export class UserService {
       where: userWhereInput,
     });
   }
-
-  // async validateUser(login: Prisma.UserWhereInput) {
-  //   return await this.userByLogin(login);
-  // }
 }

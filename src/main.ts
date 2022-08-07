@@ -4,15 +4,11 @@ import { SwaggerModule } from '@nestjs/swagger';
 import * as path from 'path';
 import { parse } from 'yaml';
 import { readFile } from 'fs/promises';
-// import { LoggingMyService } from './modules/logging/logging-my.service';
-// import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { LoggingMyService } from './modules/logging/logging-my.service';
 
 async function bootstrap() {
   const PORT = process.env.PORT || 4000;
-  // const logger = new Logger('bootstrap');
-  // const app = await NestFactory.create(AppModule);
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
