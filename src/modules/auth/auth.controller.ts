@@ -12,6 +12,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RefreshAuthDto } from './dto/refresh-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -37,7 +38,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  async refresh(@Body() updateAuthDto: UpdateAuthDto) {
-    return await this.authService.refresh(updateAuthDto);
+  async refresh(@Body() refreshAuthDto: RefreshAuthDto) {
+    return await this.authService.refresh(refreshAuthDto);
   }
 }
