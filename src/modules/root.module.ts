@@ -5,7 +5,8 @@ import { TrackModule } from './track/track.module';
 import { AlbumModule } from './album/album.module';
 import { FavsModule } from './favs/favs.module';
 import { AuthModule } from './auth/auth.module';
-import { LogMiddleware } from './logging/middleware/log-middleware';
+import { LoggingService } from './logging/logging-service';
+import { LoggingMyService } from './logging/logging-my.service';
 
 @Module({
   imports: [
@@ -16,9 +17,10 @@ import { LogMiddleware } from './logging/middleware/log-middleware';
     FavsModule,
     AuthModule,
   ],
+  // providers: [LoggingMyService],
 })
 export class RootModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LogMiddleware).forRoutes('*');
+    consumer.apply(LoggingService).forRoutes('*');
   }
 }

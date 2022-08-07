@@ -4,7 +4,7 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  UseGuards,
+  UseGuards, Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -14,11 +14,13 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
+  private logger = new Logger('Authentication');
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(@Body() createAuthDto: CreateAuthDto) {
+    this.logger.verbose(`create new user ${JSON.stringify(createAuthDto)}`);
     return await this.authService.signup(createAuthDto);
   }
 
