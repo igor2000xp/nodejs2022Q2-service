@@ -4,7 +4,7 @@ import { SwaggerModule } from '@nestjs/swagger';
 import * as path from 'path';
 import { parse } from 'yaml';
 import { readFile } from 'fs/promises';
-import { LoggingMyService } from './modules/logging/logging-my.service';
+// import { LoggingMyService } from './modules/logging/logging-my.service';
 import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
@@ -24,7 +24,6 @@ async function bootstrap() {
   );
   const document = parse(DOC_API);
   SwaggerModule.setup('doc', app, document);
-  // SwaggerModule.setup('doc', app, document);
 
   await app.listen(PORT);
   logger.log(`

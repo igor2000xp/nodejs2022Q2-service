@@ -4,8 +4,27 @@
 // export class LoggingMyService {}
 
 import { ConsoleLogger, LoggerService } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { getLevel } from './helpers';
 
 export class LoggingMyService extends ConsoleLogger {
+  private fileName = '';
+  private readonly fileSize: number;
+
+  constructor(
+    // options: ConsoleLoggerOptions,
+    private config: ConfigService,
+  ) {
+    // super(context, {
+    //   ...options,
+    // });
+    super();
+    this.setLogLevels(getLevel(config.get('LOG_LEVEL')));
+    this.fileSize = Number(config.get('LOG_FILE_SIZE_KB'));
+    // console.log(this.fileSize);
+    // console.log(config.get('LOG_LEVEL'));
+  }
+  // export class LoggingMyService extends ConsoleLogger {
   // error(message: any, stack?: string, context?: string) {
   //   // add your tailored logic here
   //   // super.error(...arguments);
