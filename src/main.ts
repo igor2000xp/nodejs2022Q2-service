@@ -28,10 +28,12 @@ async function bootstrap() {
 
   process.on('uncaughtException', (err: Error) => {
     const errorLog = `Uncaught Exception: ${JSON.stringify(err.stack || err)}`;
+    console.error(`uncaughtException happened:`);
     logger.error(errorLog, bootstrap.name);
   });
   process.on('unhandledRejection', (err: Error) => {
     const errorLog = `Unhandled Rejection: ${JSON.stringify(err.stack || err)}`;
+    console.error(`uncaughtException happened:`);
     logger.error(errorLog, bootstrap.name);
   });
 

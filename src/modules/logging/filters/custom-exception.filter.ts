@@ -26,8 +26,8 @@ export class CustomExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
-    console.log(
-      `[${CustomExceptionsFilter.name}]That message from Custom exception filter:`,
+    console.error(
+      `[${CustomExceptionsFilter.name} - Status ${responseBody.statusCode}] = That message from Custom exception filter:`,
     );
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
