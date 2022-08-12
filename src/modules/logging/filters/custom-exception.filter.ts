@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+// import { MyLoggingService } from '../my-logging.service';
 
 @Catch()
 export class CustomExceptionsFilter implements ExceptionFilter {
@@ -29,7 +30,7 @@ export class CustomExceptionsFilter implements ExceptionFilter {
     console.error(
       `[${CustomExceptionsFilter.name} - Status ${responseBody.statusCode}] = That message from Custom exception filter:`,
     );
-
+    // this.logger.error(`From Custom filter: ${httpStatus} = ${ctx.getResponse()} = ${responseBody}`)
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
 }

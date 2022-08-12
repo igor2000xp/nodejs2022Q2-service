@@ -21,7 +21,7 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document);
 
   const config = app.get(ConfigService);
-  app.useLogger(new MyLoggingService(config));
+  // app.useLogger(new MyLoggingService(config));
 
   const logger = new MyLoggingService(config);
   logger.setContext(bootstrap.name);
@@ -39,8 +39,6 @@ async function bootstrap() {
   });
 
   await app.listen(PORT);
-  logger.log(`
-  Application listening port ${PORT}
-  `);
+  logger.debug(`Application listening port ${PORT}`, 'bootstrap');
 }
 bootstrap();

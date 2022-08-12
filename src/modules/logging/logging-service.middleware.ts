@@ -17,11 +17,21 @@ export class LoggingServiceMiddleware implements NestMiddleware {
     response.on('finish', () => {
       const { statusCode } = response;
 
-      this.logger.log(
-        `${method} ${originalUrl} ${statusCode} ${JSON.stringify(
-          body,
-        )} ${JSON.stringify(params)}`,
-      );
+      if (+statusCode > 199 && +statusCode < 300) {
+        this.logger.log(
+          `${method} ${originalUrl} ${statusCode} ${JSON.stringify(
+            body,
+          )} ${JSON.stringify(params)}`,
+          LoggingServiceMiddleware.name,
+        );
+      } else if (+statusCode > 399 && +statusCode < 501) {
+        this.logger.error(
+          `${method} ${originalUrl} ${statusCode} ${JSON.stringify(
+            body,
+          )} ${JSON.stringify(params)}`,
+          LoggingServiceMiddleware.name,
+        );
+      }
     });
     next();
   }
