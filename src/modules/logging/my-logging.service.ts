@@ -2,7 +2,7 @@ import { ConsoleLogger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { getLevel } from './helpers';
 
-export class LoggingMyService extends ConsoleLogger {
+export class MyLoggingService extends ConsoleLogger {
   private readonly fileSize: number;
 
   constructor(private config: ConfigService) {

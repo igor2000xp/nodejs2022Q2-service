@@ -5,7 +5,7 @@ import { RootModule } from './modules/root.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { PrismaModule } from './prisma/prisma.module';
-import { LoggingService } from './modules/logging/logging-service';
+import { LoggingServiceMiddleware } from './modules/logging/logging-service.middleware';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { CustomExceptionsFilter } from './modules/logging/filters/custom-exception.filter';
@@ -28,6 +28,6 @@ import { CustomExceptionsFilter } from './modules/logging/filters/custom-excepti
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggingService).forRoutes('*');
+    consumer.apply(LoggingServiceMiddleware).forRoutes('*');
   }
 }

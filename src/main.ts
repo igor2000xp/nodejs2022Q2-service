@@ -5,7 +5,7 @@ import * as path from 'path';
 import { parse } from 'yaml';
 import { readFile } from 'fs/promises';
 import { ConfigService } from '@nestjs/config';
-import { LoggingMyService } from './modules/logging/logging-my.service';
+import { MyLoggingService } from './modules/logging/my-logging.service';
 
 async function bootstrap() {
   const PORT = process.env.PORT || 4000;
@@ -21,9 +21,9 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document);
 
   const config = app.get(ConfigService);
-  app.useLogger(new LoggingMyService(config));
+  app.useLogger(new MyLoggingService(config));
 
-  const logger = new LoggingMyService(config);
+  const logger = new MyLoggingService(config);
   logger.setContext(bootstrap.name);
 
   process.on('uncaughtException', (err: Error) => {
