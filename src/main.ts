@@ -26,6 +26,7 @@ async function bootstrap() {
   const logger = new MyLoggingService(config);
   logger.setContext(bootstrap.name);
 
+  // Event: 'uncaughtException' https://nodejs.org/docs/latest-v16.x/api/process.html#event-uncaughtexception
   process.on('uncaughtException', (err: Error) => {
     const errorLog = `Uncaught Exception: ${JSON.stringify(err.stack || err)}`;
     console.error(`uncaughtException happened:`);

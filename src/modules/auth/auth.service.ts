@@ -67,17 +67,17 @@ export class AuthService {
   }
 
   async refresh(refreshAuthDto: RefreshAuthDto) {
-    return this.getTokens(refreshAuthDto);
+    return await this.getTokens(refreshAuthDto);
   }
 
-  getTokens(refreshAuthDto: RefreshAuthDto) {
+  async getTokens(refreshAuthDto: RefreshAuthDto) {
     const payload: IPayLoad = this.jwtService.decode(
-      refreshAuthDto.refreshToken.split(' ')[1],
+      refreshAuthDto.refreshToken.trim(),
     ) as IPayLoad;
     const { id, login } = payload;
 
-    const accessToken = this.getAccessToken(id, login);
-    const refreshToken = this.getRefreshToken(id, login);
+    const accessToken = await this.getAccessToken(id, login);
+    const refreshToken = await this.getRefreshToken(id, login);
 
     return {
       ...accessToken,
