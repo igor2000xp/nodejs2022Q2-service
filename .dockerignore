@@ -1,0 +1,13 @@
+**/Dockerfile
+**/.git
+**/.vscode
+**/.idea
+**/docker-compose*
+**/compose*
+.editorconfig
+yarn*
+.DS_Store
+node_modules
+npm-debug.log
+data
+README.md
