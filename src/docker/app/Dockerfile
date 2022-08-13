@@ -12,6 +12,7 @@ COPY . .
 
 # Install app dependencies
 #RUN npm ci --legacy-peer-deps
+RUN npm install -g npm@8.17.0
 RUN npm install &&  npm cache clean --force
 
 # Creates a "dist" folder with the production build
