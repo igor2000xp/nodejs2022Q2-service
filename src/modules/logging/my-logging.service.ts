@@ -7,7 +7,7 @@ import {
   updateFile,
 } from './helpers';
 import fs from 'fs/promises';
-import path from 'path';
+import * as path from 'path';
 
 export class MyLoggingService extends ConsoleLogger {
   private readonly fileSize: number;
@@ -61,23 +61,25 @@ export class MyLoggingService extends ConsoleLogger {
     let isUpdate = true;
     let readFileSize: number;
     if (!this.logFileName) {
-      this.logFileName = setFileName(this.context, this.fileExtension);
+      this.logFileName = setFileName(this.context, this.fileExtension, filePrefix);
     } else {
       try {
         const file = await fs.stat(
           path.resolve(process.cwd(), 'logs', this.logFileName),
         );
         readFileSize = file.size;
+        console.log(file);
       } catch (err) {
         isUpdate = false;
         console.log('file is absent');
       }
 
       if (readFileSize + message.length > this.fileSize) {
-        console.log(readFileSize, message.length, this.fileSize);
+        // console.log(readFileSize, message.length, this.fileSize);
         isUpdate = false;
       }
-      console.log(message, filePrefix, this.logFileName, isUpdate, context);
+      console.log(readFileSize, message.length, this.fileSize, '***********', path.resolve(process.cwd(), 'logs', this.logFileName));
+      // console.log(message, filePrefix, this.logFileName, isUpdate, context);
       await this.writeToFile(
         message,
         filePrefix,
@@ -112,6 +114,7 @@ export class MyLoggingService extends ConsoleLogger {
         isNewFile,
         fileNameAndExt,
         this.fileExtension,
+        filePrefix,
       );
     } else {
       await updateFile(

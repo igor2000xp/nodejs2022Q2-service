@@ -49,9 +49,14 @@ export const updateFile = async (
   // }
 };
 
-export const setFileName = (context, fileExtension): string => {
-  const type = context === 'LoggingServiceMiddleware' ? 'logs' : 'errors';
-  return `${type}_${Date.now()}.${fileExtension}`;
+export const setFileName = (
+  context,
+  fileExtension: string,
+  filePrefix: string,
+): string => {
+  // const type = context === 'LoggingServiceMiddleware' ? 'logs' : 'errors';
+  // return `${type}_${Date.now()}.${fileExtension}`;
+  return `${filePrefix}_${Date.now()}.${fileExtension}`;
 };
 
 export const createAndWriteFile = async (
@@ -60,6 +65,7 @@ export const createAndWriteFile = async (
   isNewFile = true,
   fileNameAndExt: string,
   fileExtension: string,
+  filePrefix: string,
 ) => {
   const filePath = path.resolve(process.cwd(), 'logs');
   try {
@@ -67,9 +73,9 @@ export const createAndWriteFile = async (
   } catch (err) {
     await fs.mkdir(filePath, { recursive: true });
   }
-  if (isNewFile) {
-    fileNameAndExt = setFileName(context, fileExtension);
-    console.log(fileNameAndExt);
+  if (!isNewFile) {
+    fileNameAndExt = setFileName(context, fileExtension, filePrefix);
+    // console.log(fileNameAndExt);
   }
   try {
     try {
@@ -82,7 +88,7 @@ export const createAndWriteFile = async (
     } catch (err) {
       console.log('Error file appending');
     }
-    console.log(path.resolve(filePath, fileNameAndExt), `${message}`, 'utf8');
+    // console.log(path.resolve(filePath, fileNameAndExt), `${message}`, 'utf8');
   } catch (err) {
     throw new UnknownElementException('File writing Error');
   }
