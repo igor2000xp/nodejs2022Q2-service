@@ -42,3 +42,13 @@ export const createAndWriteFile = async (
     console.log('Error file appending');
   }
 };
+
+export const writeToFile = async (
+  message: string,
+  filePrefix: string,
+  fileNameAndExt: string,
+  context: string,
+): Promise<void> => {
+  const fileMessage = `${filePrefix.toUpperCase()} ${context} ${message} \n`;
+  await createAndWriteFile(fileMessage, context, fileNameAndExt);
+};
