@@ -4,6 +4,8 @@ import * as path from 'path';
 // import { CustomExceptionsFilter } from '../filters/custom-exception.filter';
 // import { MyLoggingService } from '../my-logging.service';
 import { UnknownElementException } from '@nestjs/core/errors/exceptions/unknown-element.exception';
+// import { MyLoggingService } from '../my-logging.service';
+// import * as log from '../my-logging.service';
 
 export const getLevel = (logLevel: string): LogLevel[] => {
   switch (logLevel) {
@@ -27,7 +29,7 @@ export const updateFile = async (
   // fileSize: number,
   // fileExtension: string,
 ) => {
-  const filePath = path.resolve(process.cwd(), 'logs');
+  const filePath = path.resolve(process.cwd(), process.env.LOG_FILE_FOLDER);
   // try {
   // const file = await fs.stat(path.resolve('logs', fileName));
   // if (!file || file.size + message.length > fileSize) {
@@ -62,7 +64,7 @@ export const setFileName = (
 export const createAndWriteFile = async (
   message: string,
   context: string,
-  isNewFile = true,
+  // isNewFile = true,
   fileNameAndExt: string,
   fileExtension: string,
   filePrefix: string,
@@ -73,7 +75,7 @@ export const createAndWriteFile = async (
   } catch (err) {
     await fs.mkdir(filePath, { recursive: true });
   }
-  if (!isNewFile) {
+  if (!fileNameAndExt) {
     fileNameAndExt = setFileName(context, fileExtension, filePrefix);
     // console.log(fileNameAndExt);
   }
