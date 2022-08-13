@@ -4,14 +4,11 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  // UseGuards,
   Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-// import { LocalAuthGuard } from './guards/local-auth.guard';
-// import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshAuthDto } from './dto/refresh-auth.dto';
 import { Public } from './decorators/public.decorator';
 
@@ -29,13 +26,11 @@ export class AuthController {
   }
 
   @Post('login')
-  // @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   async login(@Body() updateAuthDto: UpdateAuthDto) {
     return await this.authService.login(updateAuthDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refresh(@Body() refreshAuthDto: RefreshAuthDto) {

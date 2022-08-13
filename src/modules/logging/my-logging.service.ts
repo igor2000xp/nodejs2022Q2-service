@@ -66,7 +66,6 @@ export class MyLoggingService extends ConsoleLogger {
     context?: string,
   ) {
     let readFileSize: number;
-    console.log(fileName);
     const filePathFileName = path.resolve(
       process.cwd(),
       this.logFileFolder,
@@ -74,7 +73,6 @@ export class MyLoggingService extends ConsoleLogger {
     );
     const newContext = this.trueContext(this.context, context);
     try {
-      console.log(filePathFileName);
       const fileStat = await fs.stat(filePathFileName);
       readFileSize = fileStat.size;
     } catch (err) {

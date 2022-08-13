@@ -21,7 +21,6 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, document);
 
   const config = app.get(ConfigService);
-  // app.useLogger(new MyLoggingService(config));
 
   const logger = new MyLoggingService(config);
   logger.setContext(bootstrap.name);
